@@ -1,0 +1,1740 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-gov-dynamic-subset.min.css" rel="stylesheet">
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { margin:0; background:#f4f5f6; font-family:'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif; font-variant-numeric:tabular-nums; font-size:14px; line-height:1.5; -webkit-font-smoothing:antialiased; color:#1e2124; }
+  a { color:#1c589c; text-decoration:none; }
+  a:hover { color:#063a74; text-decoration:underline; }
+  button, select, option, input, textarea, svg, svg text { font-family:inherit; }
+  * { font-family:inherit; }
+  html, body { font-family:'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif; }
+  button { cursor:pointer; }
+  svg text { font-variant-numeric:tabular-nums; }
+  select:focus-visible, button:focus-visible { outline:2px solid #1c589c; outline-offset:2px; }
+</style>
+</helmet>
+<div style="background:#052b57; color:#c9d6e8; font-size:13px; line-height:1.4">
+  <div style="max-width:1600px; margin:0 auto; padding:4px 16px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap"></div>
+</div>
+<div style="background:#063a74; border-bottom:3px solid #3fa654">
+  <div style="max-width:1600px; margin:0 auto; padding:9px 16px; display:flex; align-items:baseline; gap:12px; flex-wrap:wrap">
+    <span style="font-size:19px; font-weight:800; letter-spacing:-0.02em; color:#fff">고등학교 학업중단 현황</span>
+    
+  </div>
+</div>
+
+<div data-screen-label="표준분석" style="padding:8px 14px 12px; max-width:1600px; margin:0 auto; display:flex; flex-direction:column; gap:7px">
+
+  <div style="position:sticky; top:0; z-index:60; background:#fff; border:1px solid #cdd1d5; border-bottom:2px solid #063a74; border-radius:2px; display:flex; flex-direction:column; box-shadow:0 2px 4px -2px oklch(0.3 0.03 255 / 0.18)">
+    <div style="display:flex; align-items:center; gap:12px; flex-wrap:nowrap; padding:6px 10px; min-width:0"><div style="flex:none; display:flex; border:1px solid oklch(0.85 0.02 250); border-radius:2px; overflow:hidden; background:#fff">
+      <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="2"><button onClick="{{ t.onClick }}" style="{{ t.style }}">{{ t.label }}</button></sc-for>
+    </div>
+    <div style="display:flex; align-items:center; gap:10px; flex-wrap:nowrap; flex:1 1 auto; min-width:0">
+      <sc-for list="{{ filters }}" as="f" hint-placeholder-count="5">
+        <label style="display:flex; align-items:center; gap:5px; min-width:0; flex:1 1 0; max-width:220px">
+          <span style="font-size:12px; font-weight:500; color:oklch(0.55 0.015 255); white-space:nowrap; flex:none">{{ f.label }}</span>
+          <span style="position:relative; display:block; min-width:0; flex:1 1 auto">
+            <select value="{{ f.value }}" onChange="{{ f.onChange }}" style="{{ f.style }}">
+              <sc-for list="{{ f.options }}" as="o" hint-placeholder-count="4">
+                <option value="{{ o.value }}">{{ o.label }}</option>
+              </sc-for>
+    </select><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="oklch(0.45 0.02 255)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="position:absolute; right:9px; top:50%; transform:translateY(-50%); pointer-events:none"><polyline points="6 9 12 15 18 9"></polyline></svg></span></label></sc-for></div>
+    </div>
+    <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; padding:5px 10px; border-top:1px solid oklch(0.94 0.005 250); background:oklch(0.985 0.003 250)">
+    <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap; flex:1 1 auto; min-width:0">
+      <span style="font-size:12px; font-weight:700; color:oklch(0.45 0.02 255); white-space:nowrap">선택 조건</span>
+      <sc-for list="{{ condChips }}" as="c" hint-placeholder-count="2">
+        <span style="display:inline-flex; align-items:center; gap:4px; font-size:12.5px; font-weight:600; color:#063a74; background:oklch(0.96 0.02 250); border:1px solid oklch(0.88 0.04 250); border-radius:2px; padding:3px 9px; white-space:nowrap">
+          {{ c.label }}
+          <sc-if value="{{ c.clearable }}" hint-placeholder-val="{{ false }}">
+            <button onClick="{{ c.onClear }}" title="이 조건만 해제" aria-label="이 조건만 해제" style="appearance:none; border:none; background:transparent; color:#063a74; font-size:12px; line-height:1; padding:0 0 0 3px; cursor:pointer; font-family:inherit" style-hover="color:#de3412">✕</button>
+          </sc-if>
+        </span>
+      </sc-for>
+    </div>
+    <div style="flex:none; margin-left:auto; display:flex; align-items:center; gap:10px"><span style="display:inline-flex; align-items:center; gap:6px; font-size:12px; color:#1c589c; font-weight:600; white-space:nowrap">적용 범위<span style="flex:none; display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; line-height:0; align-self:center"><dc-import name="InfoTip" info="{{ scopeInfo }}" hint-size="15px,15px"></dc-import></span></span>
+    <button onClick="{{ resetFilters }}" style="font-size:12.5px; font-weight:600; border-radius:2px; padding:3px 11px; background:#fff; border:1px solid oklch(0.82 0.04 250); color:#063a74; white-space:nowrap" style-hover="background:oklch(0.96 0.02 250)">필터 초기화</button></div>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.25fr); gap:7px">
+    <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="2">
+      <div style="background:#fff; border:1px solid #cdd1d5; border-radius:2px; padding:9px 14px; min-height:86px; display:flex; flex-direction:column; gap:3px; min-width:0">
+        <div style="display:flex; align-items:center; gap:5px; min-width:0"><span style="font-size:12.5px; color:#1e2124; font-weight:700; white-space:nowrap; flex:none">{{ k.label }}</span><span style="flex:none; display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; line-height:0; align-self:center"><dc-import name="InfoTip" info="{{ k.info }}" hint-size="15px,15px"></dc-import></span></div>
+        <div style="display:flex; align-items:baseline; gap:4px">
+          <span style="{{ k.valueStyle }}">{{ k.value }}</span>
+          <span style="font-size:13px; font-weight:500; color:oklch(0.45 0.02 255)">{{ k.unit }}</span>
+          <sc-if value="{{ k.showPill }}" hint-placeholder-val="{{ false }}">
+            
+          </sc-if>
+        </div>
+        <div style="display:flex; align-items:center; gap:6px; min-width:0; min-height:22px">
+          <sc-if value="{{ k.showBadge }}" hint-placeholder-val="{{ false }}">
+            <span style="{{ k.badgeStyle }}">{{ k.badge }}</span>
+          </sc-if>
+          <span style="font-size:12px; color:oklch(0.58 0.015 255); display:flex; flex-wrap:wrap; gap:0 4px; min-width:0; word-break:keep-all; line-height:1.4">
+            <span>{{ k.subPre }}</span>
+            <span style="{{ k.subHiStyle }}">{{ k.subHi }}</span>
+            <span style="white-space:nowrap">{{ k.subPost }}</span>
+          </span>
+        </div>
+        <div style="display:flex; align-items:baseline; gap:6px; margin-top:auto; padding-top:4px; border-top:1px solid oklch(0.95 0.005 250); font-size:12px; color:oklch(0.55 0.015 255); flex-wrap:wrap">
+          <span style="white-space:nowrap">전년 대비</span><span style="{{ k.yoyStyle }}">{{ k.yoy }}</span>
+        </div>
+      </div>
+    </sc-for>
+    <div style="background:#fff; border:1px solid #cdd1d5; border-left:3px solid #063a74; border-radius:2px; padding:9px 14px; display:flex; flex-direction:column; gap:4px; min-width:0">
+      <div style="display:flex; align-items:center; gap:5px"><span style="font-size:12.5px; color:#1e2124; font-weight:700; white-space:nowrap">핵심 요약</span><span style="flex:none; display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; line-height:0; align-self:center"><dc-import name="InfoTip" info="{{ summaryInfo }}" hint-size="15px,15px"></dc-import></span></div>
+      <sc-for list="{{ summaryLines }}" as="s" hint-placeholder-count="3">
+        <div style="display:flex; gap:6px; align-items:baseline; font-size:12.5px; color:#1e2124; line-height:1.45; word-break:keep-all"><span style="{{ s.dot }}"></span><span style="min-width:0">{{ s.pre }}<b style="{{ s.hiStyle }}">{{ s.hi }}</b>{{ s.post }}</span></div>
+      </sc-for>
+    </div>
+  </div>
+  
+  <sc-if value="{{ showCrumb }}" hint-placeholder-val="{{ false }}">
+    
+  </sc-if>
+
+  <div style="{{ L.wrap }}">
+
+    <div style="{{ L.carto }}"><div style="{{ L.cartoInner }}">
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:8px; flex-wrap:wrap">
+        <div style="min-width:0; flex:1 1 auto">
+          <div style="display:flex; align-items:center; gap:8px; min-width:0"><span style="font-size:15.5px; font-weight:700; color:#063a74; min-width:0; line-height:1.35; word-break:keep-all; white-space:nowrap">{{ cartoTitle }}</span><span style="flex:none; display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; line-height:0; align-self:center"><dc-import name="InfoTip" info="{{ infos.carto }}" hint-size="15px,15px"></dc-import></span></div>
+        </div>
+        <div style="flex:none; display:flex; align-items:center; gap:6px"><button onClick="{{ clearRegion }}" title="시·군·교육지원청·학교 선택만 해제합니다 (학년도·학교유형·학년 유지)" style="{{ clearRegionStyle }}" style-hover="background:oklch(0.96 0.02 250)">{{ clearRegionLabel }}</button><button onClick="{{ dl.carto }}" title="엑셀 다운로드" aria-label="엑셀 다운로드" style="appearance:none; flex:none; width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center; padding:0; background:#fff; border:1px solid #cdd1d5; border-radius:2px; color:#063a74; cursor:pointer" style-hover="background:oklch(0.96 0.02 250); border-color:#1c589c"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></button></div>
+        
+      </div>
+      
+      <sc-if value="{{ showOverSum }}" hint-placeholder-val="{{ true }}"></sc-if>
+      
+      <sc-if value="{{ showBars }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:8px; display:flex; flex-direction:column">
+          <div style="display:flex; justify-content:space-between; font-size:11.5px; font-weight:600; color:oklch(0.5 0.015 255); line-height:1.2; margin-bottom:12px"><span style="white-space:nowrap">{{ barAxisLabel }}</span></div>
+          <div ref="{{ cartoRef }}"><div style="display:flex; gap:4px">
+            <div style="position:relative; width:34px; flex:none; height:220px">
+              <sc-for list="{{ barTicks }}" as="t" hint-placeholder-count="5"><span style="{{ t.labelStyle }}">{{ t.label }}</span></sc-for>
+              <span style="{{ barAvgTick }}">{{ barAvgTickLabel }}</span>
+            </div>
+            <div style="flex:1 1 auto; min-width:0; display:flex; flex-direction:column">
+              <div style="position:relative; height:220px; border-bottom:1px solid #cdd1d5; border-left:1px solid #cdd1d5">
+                <sc-for list="{{ barTicks }}" as="t" hint-placeholder-count="5"><span style="{{ t.gridStyle }}"></span></sc-for>
+                <div style="position:absolute; inset:0; display:flex; gap:3px; padding:0 3px">
+                  <sc-for list="{{ barRows }}" as="r" hint-placeholder-count="31">
+                    <button onClick="{{ r.onClick }}" title="{{ r.title }}" style="appearance:none; flex:1 1 0; min-width:0; position:relative; height:100%; padding:0; background:transparent; border:none; cursor:pointer; font-family:inherit" style-hover="background:oklch(0.97 0.012 250)"><span style="{{ r.vbar }}"><sc-for list="{{ r.segs }}" as="g" hint-placeholder-count="0"><span style="{{ g.style }}"></span></sc-for></span><sc-if value="{{ barShowVal }}" hint-placeholder-val="{{ true }}"><span style="{{ r.vval }}">{{ r.rateNum }}</span></sc-if></button>
+                  </sc-for>
+                </div>
+                <div style="{{ barAvg }}"></div>
+              </div>
+              <div style="{{ barNameRow }}">
+                <sc-for list="{{ barRows }}" as="r" hint-placeholder-count="31">
+                  <span style="flex:1 1 0; min-width:0; position:relative; height:100%"><span style="{{ barNameStyle }}">{{ r.short }}</span></span>
+                </sc-for>
+              </div>
+            </div>
+          </div></div>
+          <sc-if value="{{ sgRate }}" hint-placeholder-val="{{ true }}"><div style="display:flex; justify-content:center; align-items:center; flex-wrap:wrap; gap:4px 14px; margin-top:8px; font-size:12px; color:oklch(0.45 0.015 255)"><span style="display:inline-flex; align-items:center; gap:5px; white-space:nowrap"><span style="width:14px; height:0; border-top:1.5px dashed oklch(0.4 0.02 255)"></span>경기도 평균</span><sc-for list="{{ legend }}" as="l" hint-placeholder-count="2"><span style="display:inline-flex; align-items:center; gap:5px; white-space:nowrap"><span style="{{ l.style }}"></span>{{ l.label }}</span></sc-for></div></sc-if><sc-if value="{{ sgMix }}" hint-placeholder-val="{{ false }}"><div style="display:flex; justify-content:center; flex-wrap:wrap; gap:4px 12px; margin-top:8px; font-size:12px; color:oklch(0.4 0.02 255)"><sc-for list="{{ mixLegend }}" as="l" hint-placeholder-count="8"><span style="display:flex; align-items:center; gap:5px; white-space:nowrap"><span style="{{ l.style }}"></span>{{ l.label }}</span></sc-for></div></sc-if>
+        </div>
+      </sc-if>
+      <sc-if value="{{ showSelBar }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex; align-items:center; gap:8px; margin-top:6px; padding:4px 9px; background:oklch(0.96 0.02 250); border-radius:2px">
+          <span style="font-size:12px; color:oklch(0.48 0.015 255); white-space:nowrap">선택 학교</span>
+          <span style="font-size:13px; font-weight:700; color:#063a74; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0">{{ selName }}</span>
+          <button onClick="{{ goDetail }}" style="appearance:none; margin-left:auto; flex:none; font-family:inherit; font-size:12px; font-weight:700; color:#fff; background:#063a74; border:1px solid #063a74; border-radius:2px; padding:3px 10px; cursor:pointer; white-space:nowrap" style-hover="background:#1c589c">학교 상세 보기 →</button>
+        </div>
+      </sc-if>
+      <sc-if value="{{ isTable }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:8px; display:flex; flex-direction:column; min-width:0; flex:1 1 auto; min-height:0">
+          <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px">
+            <input value="{{ schoolQ }}" onChange="{{ onSchoolQ }}" placeholder="학교명 검색" style="flex:1 1 auto; min-width:0; font-size:12.5px; padding:5px 9px; border:1px solid #cdd1d5; border-radius:2px; background:#fff; color:#1e2124">
+            <span style="flex:none; font-size:12px; color:oklch(0.5 0.015 255); white-space:nowrap">{{ pager.count }}</span>
+          </div>
+          <div style="display:grid; grid-template-columns:minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.1fr); gap:8px; padding:4px 8px; font-size:12px; color:oklch(0.55 0.015 255); border-bottom:1px solid #cdd1d5">
+            <span style="white-space:nowrap">학교명</span><span style="text-align:right; white-space:nowrap">학업중단 학생 수</span><span style="text-align:right; white-space:nowrap">학업중단율</span><span style="text-align:right; white-space:nowrap">전년 대비(%p)</span>
+          </div>
+          <div style="{{ tblScroll }}">
+            <sc-for list="{{ schoolRows }}" as="r" hint-placeholder-count="6">
+              <button onClick="{{ r.onClick }}" style="{{ r.style }}" style-hover="background:oklch(0.97 0.012 250)">
+                <span style="display:flex; align-items:center; gap:6px; min-width:0"><span style="font-size:13px; font-weight:600; color:#1e2124; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0">{{ r.name }}</span><span style="{{ r.typeStyle }}">{{ r.type }}</span></span>
+                <span style="font-family:'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif; font-size:13px; text-align:right; color:#1e2124">{{ r.count }}</span>
+                <span style="text-align:right"><span style="{{ r.rateStyle }}">{{ r.rate }}</span></span>
+                <span style="{{ r.deltaStyle }}">{{ r.delta }}</span>
+              </button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ pager.show }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin-top:6px; font-size:12px; color:oklch(0.45 0.015 255)">
+              <button onClick="{{ pager.prev }}" disabled="{{ pager.noPrev }}" style="{{ pager.prevStyle }}">‹ 이전</button>
+              <span style="white-space:nowrap">{{ pager.label }}</span>
+              <button onClick="{{ pager.next }}" disabled="{{ pager.noNext }}" style="{{ pager.nextStyle }}">다음 ›</button>
+            </div>
+          </sc-if>
+        </div>
+      </sc-if>
+      
+      
+    </div></div>
+
+    <div style="{{ L.trend }}">
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:8px; flex-wrap:wrap">
+        <div style="min-width:0; flex:1 1 auto">
+          <div style="display:flex; align-items:center; gap:8px; min-width:0"><sc-if value="{{ trendHasReason }}" hint-placeholder-val="{{ false }}"><span style="flex:none; font-size:14.5px; font-weight:700; color:#063a74; background:oklch(0.93 0.035 250); border:1px solid oklch(0.84 0.05 250); border-radius:2px; padding:1px 8px; line-height:1.4; white-space:nowrap">{{ trendReason }}</span></sc-if><span style="font-size:15.5px; font-weight:700; color:#063a74; flex:none; line-height:1.35; white-space:nowrap" title="">{{ trendTitle }}</span><span style="flex:none; display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; line-height:0; align-self:center"><dc-import name="InfoTip" info="{{ infos.trend }}" hint-size="15px,15px"></dc-import></span></div>
+        </div>
+        <label style="flex:none; display:flex; align-items:center; gap:6px"><span style="font-size:12px; font-weight:600; color:oklch(0.5 0.015 255); white-space:nowrap">학업중단 사유</span><span style="position:relative; display:block"><select value="{{ reasonValue }}" onChange="{{ onReason }}" style="appearance:none; -webkit-appearance:none; background:#fff; border:1px solid #cdd1d5; border-radius:2px; padding:4px 24px 4px 9px; font-size:12.5px; font-weight:600; color:#063a74; cursor:pointer"><sc-for list="{{ reasonOpts }}" as="o" hint-placeholder-count="4"><option value="{{ o.value }}">{{ o.label }}</option></sc-for></select><span style="position:absolute; right:8px; top:50%; transform:translateY(-50%); font-size:11px; color:oklch(0.5 0.05 250); pointer-events:none">▾</span></span></label><button onClick="{{ dl.trend }}" title="엑셀 다운로드" aria-label="엑셀 다운로드" style="appearance:none; flex:none; width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center; padding:0; background:#fff; border:1px solid #cdd1d5; border-radius:2px; color:#063a74; cursor:pointer" style-hover="background:oklch(0.96 0.02 250); border-color:#1c589c"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></button>
+        
+      </div>
+      <div style="{{ trend.unitRow }}"><span>학생 수(명)</span><span>{{ trend.rUnit }}</span></div>
+      <div ref="{{ trend.ref }}" style="flex:1 1 auto; position:relative; min-height:220px; min-width:0; margin-top:2px">
+        <svg viewBox="{{ trend.vb }}" preserveAspectRatio="none" style="{{ trend.svgStyle }}">
+          <g>
+            <sc-for list="{{ trend.points }}" as="p" hint-placeholder-count="6">
+              <rect x="{{ p.hx }}" y="14" width="{{ p.hw }}" height="{{ trend.bandH }}" fill="{{ p.band }}" onClick="{{ p.onClick }}" style="cursor:pointer"><title>{{ p.year }} 선택</title></rect>
+            </sc-for>
+          </g>
+          <line x1="44" x2="{{ trend.x2 }}" y1="{{ trend.axisY }}" y2="{{ trend.axisY }}" stroke="oklch(0.7 0.01 255)" stroke-width="1" style="pointer-events:none"></line>
+          {{ trend.barEls }}
+          
+          <polyline points="{{ trend.provPath }}" fill="none" stroke="oklch(0.66 0.02 255)" stroke-width="2" stroke-dasharray="6 4" style="pointer-events:none"></polyline>
+          <polyline points="{{ trend.scopePath }}" fill="none" stroke="#063a74" stroke-width="2.5" stroke-linejoin="round" style="pointer-events:none"></polyline>
+          <g>
+            <sc-for list="{{ trend.points }}" as="p" hint-placeholder-count="6">
+              <circle cx="{{ p.x }}" cy="{{ p.y }}" r="{{ p.r }}" fill="#063a74" stroke="{{ p.stroke }}" stroke-width="2" onClick="{{ p.onClick }}" style="cursor:pointer"></circle>
+            </sc-for>
+          </g>
+          {{ trend.textEls }}
+        </svg>
+      </div>
+      <div style="display:flex; gap:9px; flex-wrap:wrap; margin-top:2px; justify-content:center">
+          <span style="display:flex; align-items:center; gap:5px; font-size:12px; color:oklch(0.5 0.02 255); white-space:nowrap"><span style="width:11px; height:11px; background:oklch(0.78 0.07 250); border-radius:1px"></span>학생 수</span>
+          <span style="display:flex; align-items:center; gap:5px; font-size:12px; color:oklch(0.5 0.02 255); white-space:nowrap"><span style="width:14px; height:2px; background:#063a74"></span>{{ trend.lineName }}</span>
+          <sc-if value="{{ trend.showProv }}" hint-placeholder-val="{{ true }}"><span style="display:flex; align-items:center; gap:5px; font-size:12px; color:oklch(0.5 0.02 255); white-space:nowrap"><span style="width:14px; height:0; border-top:2px dashed oklch(0.62 0.02 255)"></span>경기도 평균</span></sc-if>
+          
+        </div>
+    </div>
+
+    <div style="{{ L.donut }}">
+      <div style="display:flex; align-items:center; gap:8px; min-width:0"><span style="font-size:15.5px; font-weight:700; color:#063a74; flex:none; line-height:1.35; white-space:nowrap" title="학업중단 사유 구성 비율">학업중단 사유 구성 비율</span><span style="flex:none; display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; line-height:0; align-self:center"><dc-import name="InfoTip" info="{{ infos.donut }}" hint-size="15px,15px"></dc-import></span><button onClick="{{ dl.donut }}" title="엑셀 다운로드" aria-label="엑셀 다운로드" style="appearance:none; flex:none; margin-left:auto; width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center; padding:0; background:#fff; border:1px solid #cdd1d5; border-radius:2px; color:#063a74; cursor:pointer" style-hover="background:oklch(0.96 0.02 250); border-color:#1c589c"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></button></div>
+      <div style="display:flex; flex-direction:column; gap:4px; margin-top:6px; flex:1; min-width:0">
+        
+        <div style="display:grid; grid-template-columns:minmax(96px, 128px) minmax(0, 1fr) 64px 50px 58px; gap:8px; align-items:end; padding:2px 5px 4px; border-bottom:1px solid #cdd1d5; font-size:12px; font-weight:600; color:oklch(0.5 0.015 255); white-space:nowrap"><span>사유</span><span></span><span style="text-align:right">학생 수</span><span style="text-align:right">구성비</span><span style="text-align:right">전년 대비</span></div>
+        <div style="flex:1 1 auto; display:flex; flex-direction:column; gap:0; min-width:0; min-height:0">
+          <sc-for list="{{ donut.rows }}" as="r" hint-placeholder-count="7">
+            <div onMouseEnter="{{ r.onEnter }}" onMouseLeave="{{ r.onLeave }}" onClick="{{ r.onClick }}" title="{{ r.title }}" style="{{ r.style }}">
+              <span style="font-size:12.5px; color:oklch(0.36 0.02 255); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0">{{ r.label }}</span>
+              <span style="height:18px; background:oklch(0.96 0.005 250); border-radius:2px; display:block; overflow:hidden"><span style="{{ r.barStyle }}"></span></span>
+              <span style="font-family:'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif; font-size:12.5px; font-weight:600; color:#1e2124; text-align:right; white-space:nowrap">{{ r.count }}</span>
+              <span style="font-family:'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif; font-size:12px; color:oklch(0.58 0.015 255); text-align:right; white-space:nowrap">{{ r.pct }}</span>
+              <span style="{{ r.deltaStyle }}">{{ r.delta }}</span>
+            </div>
+          </sc-for>
+          
+        </div>
+      </div>
+      
+    </div>
+
+    <div style="{{ L.brk }}"></div>
+
+    <div style="{{ L.rightCol }}">
+    <div style="{{ L.profCol }}">
+    <div style="{{ L.profile }}">
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:8px">
+        <div style="flex:1 1 auto; min-width:0">
+          <div style="display:flex; align-items:center; gap:8px; min-width:0"><span style="font-size:15.5px; font-weight:700; color:#063a74; flex:none; line-height:1.35; white-space:nowrap" title="학업중단 주요 요인 현황">학업중단 주요 요인 현황</span><span style="flex:none; display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; line-height:0; align-self:center"><dc-import name="InfoTip" info="{{ infos.profile }}" hint-size="15px,15px"></dc-import></span><button onClick="{{ dl.profile }}" title="엑셀 다운로드" aria-label="엑셀 다운로드" style="appearance:none; flex:none; margin-left:auto; width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center; padding:0; background:#fff; border:1px solid #cdd1d5; border-radius:2px; color:#063a74; cursor:pointer" style-hover="background:oklch(0.96 0.02 250); border-color:#1c589c"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></button></div>
+        </div>
+        
+      </div>
+      <div style="display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:4px; font-size:12px; color:oklch(0.45 0.015 255)">
+        <span style="display:flex; align-items:center; gap:5px; white-space:nowrap"><span style="width:14px; height:8px; background:#063a74; border-radius:1px"></span>{{ alt.selLabel }}</span>
+        <sc-if value="{{ alt.showAvg }}" hint-placeholder-val="{{ true }}"><span style="display:flex; align-items:center; gap:5px; white-space:nowrap"><span style="width:0; height:12px; border-left:2px solid oklch(0.55 0.015 255)"></span>경기도 평균</span></sc-if>
+      </div>
+      <div style="display:flex; flex-direction:column; margin-top:6px">
+        <div style="{{ alt.headStyle }}">
+          <span>지표</span><span>{{ alt.barHead }}</span><span style="text-align:right">실제 비율</span>
+          <sc-if value="{{ alt.showAvg }}" hint-placeholder-val="{{ true }}"><span style="text-align:right">경기도 평균</span><span style="text-align:right">평균 대비</span></sc-if>
+        </div>
+        <sc-for list="{{ alt.rows }}" as="r" hint-placeholder-count="4">
+          <div onClick="{{ r.onClick }}" style="{{ r.rowStyle }}">
+            <span style="display:flex; align-items:center; gap:6px; min-width:0"><span style="font-size:13px; font-weight:600; color:#1e2124; word-break:keep-all; line-height:1.3">{{ r.label }}</span><sc-if value="{{ r.showDetail }}" hint-placeholder-val="{{ false }}"><button onClick="{{ r.openDetail }}" title="출결 불안정 상세 분석 열기" aria-label="출결 불안정 상세 분석 열기" style="appearance:none; flex:none; display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; padding:0; border:1px solid oklch(0.85 0.02 250); border-radius:3px; background:#fff; color:#063a74; cursor:pointer" style-hover="background:oklch(0.95 0.02 250); border-color:#1c589c"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5H5v14h14v-6"></path><path d="M14 4h6v6"></path><path d="M20 4 11 13"></path></svg></button></sc-if></span>
+            <span style="position:relative; display:block; height:12px; background:oklch(0.95 0.004 250); border-radius:2px"><span style="{{ r.bar }}"></span><span style="{{ r.mark }}"></span></span>
+            <span style="font-family:'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif; font-size:13.5px; font-weight:700; color:#1e2124; text-align:right; white-space:nowrap">{{ r.value }}</span>
+            <sc-if value="{{ alt.showAvg }}" hint-placeholder-val="{{ true }}">
+              <span style="font-family:'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif; font-size:12.5px; color:oklch(0.5 0.015 255); text-align:right; white-space:nowrap">{{ r.provV }}</span>
+              <span style="{{ r.diffStyle }}">{{ r.diff }}</span>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+      
+    </div>
+
+    </div><div style="{{ L.scatter }}">
+      <div style="{{ scView.distStyle }}">
+      <div style="display:flex; flex-direction:column; align-items:stretch; gap:6px">
+        <div style="min-width:0">
+          <div style="display:flex; align-items:center; gap:8px; min-width:0"><span style="flex:none; font-size:14.5px; font-weight:700; color:#063a74; background:oklch(0.93 0.035 250); border:1px solid oklch(0.84 0.05 250); border-radius:2px; padding:1px 8px; line-height:1.4; white-space:nowrap">{{ scatter.titleHi }}</span><span style="font-size:15.5px; font-weight:700; color:#063a74; flex:none; line-height:1.35; white-space:nowrap; margin-left:-5px" title="">{{ scatter.titleRest }}</span><span style="flex:none; display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; line-height:0; align-self:center"><dc-import name="InfoTip" info="{{ infos.scatter }}" hint-size="15px,15px"></dc-import></span><button onClick="{{ dl.scatter }}" title="엑셀 다운로드" aria-label="엑셀 다운로드" style="appearance:none; flex:none; margin-left:auto; width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center; padding:0; background:#fff; border:1px solid #cdd1d5; border-radius:2px; color:#063a74; cursor:pointer" style-hover="background:oklch(0.96 0.02 250); border-color:#1c589c"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></button></div>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:nowrap; justify-content:flex-end">
+        <label style="display:flex; align-items:center; gap:6px">
+          <span style="font-size:12px; font-weight:600; color:oklch(0.5 0.015 255); white-space:nowrap">분석 지표</span>
+          <span style="position:relative; display:block">
+            <select value="{{ scatter.axisKey }}" onChange="{{ scatter.onAxis }}" style="appearance:none; -webkit-appearance:none; background:#fff; border:1px solid oklch(0.72 0.09 250); border-radius:2px; padding:5px 26px 5px 10px; font-size:13px; font-weight:600; font-family:inherit; color:#063a74; cursor:pointer">
+              <sc-for list="{{ scatter.axisOpts }}" as="o" hint-placeholder-count="4">
+                <option value="{{ o.value }}">{{ o.label }}</option>
+              </sc-for>
+            </select>
+            <span style="position:absolute; right:9px; top:50%; transform:translateY(-50%); font-size:11px; color:oklch(0.5 0.05 250); pointer-events:none">▾</span>
+          </span>
+        </label>
+        <label style="display:flex; align-items:center; gap:6px">
+          <span style="font-size:12px; font-weight:600; color:oklch(0.5 0.015 255); white-space:nowrap">학교유형</span>
+          <span style="position:relative; display:block">
+            <select value="{{ scatter.typeValue }}" onChange="{{ scatter.onType }}" style="{{ scatter.typeSelectStyle }}">
+              <sc-for list="{{ scatter.typeOpts }}" as="o" hint-placeholder-count="5">
+                <option value="{{ o.value }}">{{ o.label }}</option>
+              </sc-for>
+            </select>
+            <span style="position:absolute; right:9px; top:50%; transform:translateY(-50%); font-size:11px; color:oklch(0.5 0.05 250); pointer-events:none">▾</span>
+          </span>
+        </label>
+        </div>
+      </div>
+      
+      <div style="display:flex; flex-direction:column; justify-content:center; gap:2px; margin-top:6px; flex:1; min-width:0">
+      <div ref="{{ scatterRef }}" onClick="{{ scatter.chipHit }}" onMouseMove="{{ scatter.chipHover }}" onMouseLeave="{{ scatter.chipHover }}" style="position:relative; width:100%; min-width:0; height:380px; flex:none">
+        <svg viewBox="{{ scatter.vb }}" style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; left: -1px">
+          <defs><clipPath id="qclip"><rect x="{{ scatter.px0 }}" y="{{ scatter.clipY }}" width="{{ scatter.pw }}" height="{{ scatter.clipH }}"></rect></clipPath></defs>
+          <g style="pointer-events:none"><sc-for list="{{ scatter.qRects }}" as="qr" hint-placeholder-count="4"><rect x="{{ qr.x }}" y="{{ qr.y }}" width="{{ qr.w }}" height="{{ qr.h }}" fill="{{ qr.fill }}" fill-opacity="{{ qr.op }}"></rect></sc-for></g>
+          <g>
+            <sc-for list="{{ scatter.grid }}" as="g" hint-placeholder-count="4">
+              <line x1="{{ scatter.px0 }}" x2="{{ scatter.px1 }}" y1="{{ g.y }}" y2="{{ g.y }}" stroke="oklch(0.94 0.006 250)" stroke-width="1"></line>
+            </sc-for>
+          </g>
+          <rect x="{{ scatter.px0 }}" y="14" width="{{ scatter.pw }}" height="284" fill="none" stroke="#cdd1d5" stroke-width="1"></rect>
+          <line x1="{{ scatter.avgX }}" x2="{{ scatter.avgX }}" y1="14" y2="298" stroke="oklch(0.5 0.03 255)" stroke-width="{{ scatter.avxW }}" stroke-dasharray="4 3" style="pointer-events:none"></line>
+          <line x1="{{ scatter.px0 }}" x2="{{ scatter.px1 }}" y1="{{ scatter.avgY }}" y2="{{ scatter.avgY }}" stroke="oklch(0.5 0.03 255)" stroke-width="{{ scatter.avyW }}" stroke-dasharray="4 3" style="pointer-events:none"></line>
+          <polyline points="{{ scatter.linePath }}" clip-path="url(#qclip)" fill="none" stroke="#063a74" stroke-width="{{ scatter.fitW }}" stroke-dasharray="7 4" pointer-events="none"></polyline>
+          <line x1="{{ scatter.avgX }}" x2="{{ scatter.avgX }}" y1="14" y2="298" stroke="transparent" stroke-width="9" onMouseEnter="{{ scatter.hAvx }}" onMouseLeave="{{ scatter.hOff }}" style="cursor:default"></line>
+          <line x1="{{ scatter.px0 }}" x2="{{ scatter.px1 }}" y1="{{ scatter.avgY }}" y2="{{ scatter.avgY }}" stroke="transparent" stroke-width="9" onMouseEnter="{{ scatter.hAvy }}" onMouseLeave="{{ scatter.hOff }}" style="cursor:default"></line>
+          <polyline points="{{ scatter.linePath }}" clip-path="url(#qclip)" fill="none" stroke="transparent" stroke-width="10" onMouseEnter="{{ scatter.hFit }}" onMouseLeave="{{ scatter.hOff }}" style="cursor:default"></polyline>
+                    <g>
+            <sc-for list="{{ scatter.dots }}" as="d" hint-placeholder-count="40">
+              <circle cx="{{ d.cx }}" cy="{{ d.cy }}" r="{{ d.r }}" fill="{{ d.fill }}" fill-opacity="{{ d.op }}" stroke="{{ d.stroke }}" stroke-width="{{ d.sw }}" onMouseEnter="{{ d.onEnter }}" onMouseLeave="{{ d.onLeave }}" onClick="{{ d.onClick }}" style="cursor:pointer"></circle>
+            </sc-for>
+          </g>
+          {{ scatter.textEls }}
+        </svg>
+        <div style="position:absolute; left:{{ scatter.qPos.l }}; top:{{ scatter.qPos.t }}; z-index:2; pointer-events:none"><button data-q="UL" onClick="{{ scatter.qUL.onClick }}" style="{{ scatter.qUL.style }}"><span style="{{ scatter.qUL.nameStyle }}">{{ scatter.qUL.name }}</span><span style="{{ scatter.qUL.valStyle }}">{{ scatter.qUL.count }} · {{ scatter.qUL.pct }}</span></button></div>
+        <div style="position:absolute; right:{{ scatter.qPos.r }}; top:{{ scatter.qPos.t }}; z-index:2; pointer-events:none"><button data-q="UR" onClick="{{ scatter.qUR.onClick }}" style="{{ scatter.qUR.style }}"><span style="{{ scatter.qUR.nameStyle }}">{{ scatter.qUR.name }}</span><span style="{{ scatter.qUR.valStyle }}">{{ scatter.qUR.count }} · {{ scatter.qUR.pct }}</span></button></div>
+        <div style="position:absolute; left:{{ scatter.qPos.l }}; bottom:{{ scatter.qPos.b }}; z-index:2; pointer-events:none"><button data-q="LL" onClick="{{ scatter.qLL.onClick }}" style="{{ scatter.qLL.style }}"><span style="{{ scatter.qLL.nameStyle }}">{{ scatter.qLL.name }}</span><span style="{{ scatter.qLL.valStyle }}">{{ scatter.qLL.count }} · {{ scatter.qLL.pct }}</span></button></div>
+        <div style="position:absolute; right:{{ scatter.qPos.r }}; bottom:{{ scatter.qPos.b }}; z-index:2; pointer-events:none"><button data-q="LR" onClick="{{ scatter.qLR.onClick }}" style="{{ scatter.qLR.style }}"><span style="{{ scatter.qLR.nameStyle }}">{{ scatter.qLR.name }}</span><span style="{{ scatter.qLR.valStyle }}">{{ scatter.qLR.count }} · {{ scatter.qLR.pct }}</span></button></div>
+        <sc-if value="{{ scatter.tip.show }}" hint-placeholder-val="{{ false }}">
+          <div style="{{ scatter.tip.style }}">
+            <div style="font-size:13px; font-weight:700; color:#1e2124; margin-bottom:3px; white-space:nowrap">{{ scatter.tip.name }}</div>
+            <sc-for list="{{ scatter.tip.rows }}" as="t" hint-placeholder-count="5">
+              <div style="display:flex; justify-content:space-between; gap:12px; font-size:12px; line-height:1.55">
+                <span style="color:oklch(0.55 0.015 255); white-space:nowrap">{{ t.k }}</span>
+                <span style="font-family:'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif; font-weight:600; color:#1e2124; white-space:nowrap">{{ t.v }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px 16px; flex-wrap:wrap; margin-top:6px; justify-content:center">
+        <span style="font-size:11.5px; color:oklch(0.55 0.015 255); white-space:nowrap">점선(평균)·추세선에 마우스를 올리면 값과 상관계수가 표시됩니다</span>
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap">
+          <sc-for list="{{ scatter.typeLegend }}" as="t" hint-placeholder-count="4">
+            <span style="display:flex; align-items:center; gap:5px; font-size:12px; color:oklch(0.45 0.02 255); white-space:nowrap"><span style="{{ t.dotStyle }}"></span>{{ t.label }}</span>
+          </sc-for>
+        </div>
+      </div>
+      
+      </div>
+      
+    </div>
+
+    
+
+    </div>
+
+    
+
+  </div>
+
+  <div data-screen-label="추천 조합" style="display:flex; flex-wrap:wrap; gap:7px; align-items:stretch">
+    
+    
+    
+  </div>
+
+</div>
+
+<sc-if value="{{ modal.open }}" hint-placeholder-val="{{ false }}">
+  <div role="dialog" aria-label="{{ modal.title }}" style="{{ panel.style }}">
+    <div onMouseDown="{{ panel.dragStart }}" style="display:flex; align-items:center; gap:8px; padding:7px 8px 7px 14px; background:#063a74; color:#fff; cursor:move; user-select:none; flex:none">
+      <span style="font-size:14.5px; font-weight:700; white-space:nowrap; line-height:1.3">{{ modal.title }}</span>
+      <span style="font-size:12px; color:#c9d6e8; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0; flex:1 1 auto">{{ modal.sub }}</span>
+      <button onMouseDown="{{ panel.stop }}" onClick="{{ panel.toggleMin }}" title="{{ panel.minTitle }}" aria-label="{{ panel.minTitle }}" style="appearance:none; flex:none; width:26px; height:26px; display:flex; align-items:center; justify-content:center; font-family:inherit; font-size:14px; font-weight:700; line-height:1; color:#fff; background:transparent; border:1px solid oklch(1 0 0 / 0.35); border-radius:2px; cursor:pointer" style-hover="background:oklch(1 0 0 / 0.14)">{{ panel.minIcon }}</button>
+      <button onMouseDown="{{ panel.stop }}" onClick="{{ modal.close }}" title="닫기" aria-label="닫기" style="appearance:none; flex:none; width:26px; height:26px; display:flex; align-items:center; justify-content:center; font-family:inherit; font-size:14px; line-height:1; color:#fff; background:transparent; border:1px solid oklch(1 0 0 / 0.35); border-radius:2px; cursor:pointer" style-hover="background:oklch(1 0 0 / 0.14)">✕</button>
+    </div>
+    <sc-if value="{{ panel.showBody }}" hint-placeholder-val="{{ true }}">
+    <div style="overflow:auto; padding:12px 14px 18px; min-height:0; flex:1 1 auto">
+      <sc-if value="{{ modal.isEtc }}" hint-placeholder-val="{{ false }}">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:16px; align-items:stretch">
+                <div style="display:flex; flex-direction:column; gap:6px; min-width:0">
+                  <span style="font-size:12.5px; font-weight:700; color:oklch(0.36 0.02 255); line-height:1.3">세부 사유별 학생 수 · 구성비</span>
+                  <div style="flex:1 1 auto; display:flex; flex-direction:column; justify-content:space-evenly; gap:10px; padding:4px 0">
+                  <sc-for list="{{ donut.etcRows }}" as="e" hint-placeholder-count="3">
+                    <div style="display:grid; grid-template-columns:64px minmax(0, 1fr) 58px 50px; align-items:center; gap:8px">
+                      <span style="font-size:12px; color:oklch(0.36 0.02 255); white-space:nowrap">{{ e.label }}</span>
+                      <span style="height:36px; background:oklch(0.96 0.004 250); border-radius:2px; display:block; overflow:hidden"><span style="{{ e.barStyle }}"></span></span>
+                      <span style="font-family:'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif; font-size:13px; font-weight:700; color:#1e2124; text-align:right; white-space:nowrap">{{ e.count }}</span>
+                      <span style="font-family:'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif; font-size:13px; color:oklch(0.45 0.015 255); text-align:right; white-space:nowrap">{{ e.pct }}</span>
+                    </div>
+                  </sc-for>
+                  </div>
+                </div>
+                <div style="display:flex; flex-direction:column; gap:6px; min-width:0">
+                  <span style="font-size:12.5px; font-weight:700; color:oklch(0.36 0.02 255); line-height:1.3">연도별 학생 수 추이 (명)</span>
+                  {{ donut.etcLine }}
+                  <div style="display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-top:2px">
+                    <sc-for list="{{ donut.etcLegend }}" as="l" hint-placeholder-count="3">
+                      <span style="display:flex; align-items:center; gap:4px; font-size:11.5px; color:oklch(0.42 0.015 255); white-space:nowrap"><span style="{{ l.sw }}"></span>{{ l.label }}</span>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+      </sc-if>
+      <sc-if value="{{ modal.isAtt }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex; flex-direction:column; min-width:0">
+      <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:8px; flex-wrap:wrap">
+        <div style="min-width:0; flex:1 1 auto">
+          <div style="display:flex; align-items:center; gap:8px; min-width:0; padding-right:8px"><span style="font-size:15.5px; font-weight:700; color:#063a74; flex:none; line-height:1.35; white-space:nowrap" title="">{{ attend.title }}</span><span style="flex:none; display:inline-flex; align-items:center; justify-content:center; width:16px; height:16px; line-height:0; align-self:center"><dc-import name="InfoTip" info="{{ infos.attend }}" hint-size="15px,15px"></dc-import></span><button onClick="{{ dl.attend }}" title="엑셀 다운로드" aria-label="엑셀 다운로드" style="appearance:none; flex:none; margin-left:auto; width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center; padding:0; background:#fff; border:1px solid #cdd1d5; border-radius:2px; color:#063a74; cursor:pointer" style-hover="background:oklch(0.96 0.02 250); border-color:#1c589c"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg></button></div>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center">
+          <div style="display:flex; border:1px solid oklch(0.85 0.02 250); border-radius:2px; overflow:hidden; background:#fff">
+            <sc-for list="{{ attend.gradeTabs }}" as="g" hint-placeholder-count="4">
+              <button onClick="{{ g.onClick }}" title="학년 선택은 이 그래프에만 적용됩니다" style="{{ g.style }}">{{ g.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; border:1px solid oklch(0.85 0.02 250); border-radius:2px; overflow:hidden; background:#fff; margin-top:6px; align-self:flex-start; max-width:100%; flex-wrap:wrap">
+        <sc-for list="{{ attend.kindTabs }}" as="k" hint-placeholder-count="4"><button onClick="{{ k.onClick }}" style="{{ k.style }}">{{ k.label }}</button></sc-for>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); margin-top:8px; border:1px solid #cdd1d5; border-radius:2px; background:oklch(0.985 0.003 250)">
+        <sc-for list="{{ attend.kpis }}" as="k" hint-placeholder-count="3">
+          <span style="display:flex; flex-direction:column; gap:2px; padding:7px 12px; border-left:1px solid #cdd1d5; margin-left:-1px; min-width:0">
+            <span style="font-size:11.5px; color:oklch(0.5 0.015 255); white-space:nowrap; overflow:hidden; text-overflow:ellipsis">{{ k.label }}</span>
+            <span style="font-family:'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif; font-size:18px; font-weight:700; color:#1e2124; line-height:1.2">{{ k.value }}</span>
+          </span>
+        </sc-for>
+      </div>
+      <div style="{{ attend.unitRow }}"><span style="white-space:nowrap">{{ attend.cTitle }}</span><span style="white-space:nowrap; text-align:right">{{ attend.rTitle }}</span></div>
+      <div ref="{{ attend.ref }}" style="position:relative; margin-top:4px; min-width:0">
+        {{ attend.svg }}
+        <sc-if value="{{ attend.tip.show }}" hint-placeholder-val="{{ false }}">
+          <div style="{{ attend.tip.style }}">
+            <span style="font-size:12.5px; font-weight:700; color:#1e2124">{{ attend.tip.month }}</span>
+            <span style="font-size:12px; color:oklch(0.45 0.015 255)">{{ attend.tip.cLabel }} <b style="color:#1e2124">{{ attend.tip.cVal }}</b></span>
+            <span style="font-size:12px; color:oklch(0.45 0.015 255)">{{ attend.tip.rLabel }} <b style="color:#063a74">{{ attend.tip.rVal }}</b></span>
+          </div>
+        </sc-if>
+      </div>
+      <div style="display:flex; align-items:center; justify-content:center; gap:6px 14px; flex-wrap:wrap; margin-top:6px; font-size:12px; color:oklch(0.5 0.02 255)">
+        <span style="display:flex; align-items:center; gap:5px; white-space:nowrap"><span style="width:11px; height:11px; background:oklch(0.86 0.045 250); border-radius:1px"></span>{{ attend.cLeg }}</span>
+        <span style="display:flex; align-items:center; gap:5px; white-space:nowrap"><span style="width:14px; height:2px; background:#063a74"></span>{{ attend.rLeg }}</span>
+        <span style="display:flex; align-items:center; gap:5px; white-space:nowrap"><span style="width:14px; height:0; border-top:1.5px dashed oklch(0.55 0.02 255)"></span>{{ attend.provLeg }}</span>
+      </div>
+      </div>
+      </sc-if>
+    </div>
+    <div onMouseDown="{{ panel.resizeStart }}" title="크기 조절" style="position:absolute; right:0; bottom:0; width:16px; height:16px; cursor:nwse-resize; background:linear-gradient(135deg, transparent 0 55%, #9aa4ad 55% 62%, transparent 62% 72%, #9aa4ad 72% 79%, transparent 79%)"></div>
+    </sc-if>
+  </div>
+</sc-if>
+<div style="background:#063a74; color:#dbe4f0; font-size:13px; margin-top:8px">
+  <div style="max-width:1600px; margin:0 auto; padding:10px 16px; display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap"><span>경기도교육청 · 고등학교 학업중단 현황 표준분석 대시보드</span></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;userRole&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;전체 공개&quot;, &quot;학교명 비공개&quot;], &quot;default&quot;: &quot;전체 공개&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;권한&quot; },
+  &quot;attendDefinition&quot;: { &quot;editor&quot;: &quot;text&quot;, &quot;default&quot;: &quot;연간 미인정 결석·지각·조퇴·결과 합계가 기준 이상인 학생 수 ÷ 재적 학생 수 (구체 기준은 데이터 관리카드에서 정의)&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;데이터 관리카드&quot; },
+  &quot;initialYear&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;2020&quot;, &quot;2021&quot;, &quot;2022&quot;, &quot;2023&quot;, &quot;2024&quot;, &quot;2025&quot;], &quot;default&quot;: &quot;2025&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;기본값&quot; },
+  &quot;initialIndicator&quot;: { &quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;basic&quot;, &quot;violence&quot;, &quot;attend&quot;, &quot;emotion&quot;], &quot;default&quot;: &quot;basic&quot;, &quot;tsType&quot;: &quot;string&quot;, &quot;section&quot;: &quot;기본값&quot; }
+}">
+const YEARS = [2020, 2021, 2022, 2023, 2024, 2025];
+const YF = { 2020: 0.86, 2021: 0.90, 2022: 0.95, 2023: 0.99, 2024: 1.03, 2025: 1.07 };
+const NATION = { 2020: 1.18, 2021: 1.23, 2022: 1.28, 2023: 1.33, 2024: 1.38, 2025: 1.43 };
+const GRADES = ["전체", "1학년", "2학년", "3학년"];
+const GF = { "전체": 1, "1학년": 0.72, "2학년": 1.00, "3학년": 1.28 };
+const GI = { "전체": 1, "1학년": 0.92, "2학년": 1.0, "3학년": 1.08 };
+
+const R = (n, c, r, base) => ({ name: n, col: c, row: r, base: base });
+const REGIONS = [
+  R("연천군", 3, 1, 1.86), R("포천시", 4, 1, 1.72), R("가평군", 5, 1, 1.69),
+  R("파주시", 2, 2, 1.29), R("양주시", 3, 2, 1.42), R("동두천시", 4, 2, 1.81), R("남양주시", 5, 2, 1.18),
+  R("김포시", 1, 3, 1.15), R("고양시", 2, 3, 0.98), R("의정부시", 3, 3, 1.46), R("구리시", 4, 3, 0.99), R("하남시", 5, 3, 0.94), R("양평군", 6, 3, 1.48),
+  R("부천시", 1, 4, 1.34), R("광명시", 2, 4, 1.02), R("과천시", 3, 4, 0.62), R("성남시", 4, 4, 1.05), R("광주시", 5, 4, 1.21), R("여주시", 6, 4, 1.52),
+  R("시흥시", 1, 5, 1.55), R("안산시", 2, 5, 1.62), R("안양시", 3, 5, 0.92), R("의왕시", 4, 5, 0.86), R("용인시", 5, 5, 0.88), R("이천시", 6, 5, 1.33),
+  R("화성시", 2, 6, 1.24), R("군포시", 3, 6, 0.95), R("수원시", 4, 6, 1.12), R("오산시", 5, 6, 1.37), R("안성시", 6, 6, 1.66),
+  R("평택시", 3, 7, 1.58)
+];
+const OFFICE = {
+  "수원시": "수원교육지원청", "고양시": "고양교육지원청", "용인시": "용인교육지원청", "성남시": "성남교육지원청",
+  "부천시": "부천교육지원청", "안산시": "안산교육지원청", "남양주시": "구리남양주교육지원청", "구리시": "구리남양주교육지원청",
+  "안양시": "안양과천교육지원청", "과천시": "안양과천교육지원청", "화성시": "화성오산교육지원청", "오산시": "화성오산교육지원청",
+  "평택시": "평택교육지원청", "의정부시": "의정부교육지원청", "시흥시": "시흥교육지원청", "파주시": "파주교육지원청",
+  "광명시": "광명교육지원청", "김포시": "김포교육지원청", "군포시": "군포의왕교육지원청", "의왕시": "군포의왕교육지원청",
+  "광주시": "광주하남교육지원청", "하남시": "광주하남교육지원청", "이천시": "이천교육지원청", "양주시": "동두천양주교육지원청",
+  "동두천시": "동두천양주교육지원청", "안성시": "안성교육지원청", "포천시": "포천교육지원청", "여주시": "여주교육지원청",
+  "양평군": "양평교육지원청", "가평군": "가평교육지원청", "연천군": "연천교육지원청"
+};
+const OFFICES = (function () {
+  var seen = {}, out = [];
+  REGIONS.forEach(function (r) { var o = OFFICE[r.name]; if (!seen[o]) { seen[o] = 1; out.push(o); } });
+  return out.sort();
+})();
+
+const STYPES = [
+  { k: "일반고", m: 1.00, c: "#1c589c" },
+  { k: "자율고", m: 0.74, c: "oklch(0.55 0.14 305)" },
+  { k: "특성화고", m: 1.42, c: "oklch(0.64 0.15 48)" },
+  { k: "특목고", m: 0.56, c: "oklch(0.6 0.1 165)" }
+];
+const IND = [
+  { key: "basic", label: "기초학력 미달", metric: "기초학력 미달 학생 비율", josa: "과", short: "기초학력 미달", unit: "%", grade: true, b0: 4, b1: 14, k: 0.55, cntName: "미달 학생", cntUnit: "명" },
+  { key: "violence", label: "학교폭력 조치 학생", metric: "학교폭력 조치 학생 비율", josa: "과", short: "학교폭력 조치", unit: "%", grade: false, b0: 0.3, b1: 1.6, k: 0.32, cntName: "조치 학생", cntUnit: "명" },
+  { key: "attend", label: "출결 불안정", metric: "출결 불안정 학생 비율", josa: "과", short: "출결 불안정", unit: "%", grade: true, b0: 2, b1: 7, k: 0.7, cntName: "출결 불안정 학생", cntUnit: "명" },
+  { key: "emotion", label: "정서·행동 관심군", metric: "정서·행동 관심군 학생 비율", josa: "과", short: "정서·행동 관심군", unit: "%", grade: true, b0: 3, b1: 8, k: 0.45, cntName: "관심군 학생", cntUnit: "명" }
+];
+const IND_BY = {};
+IND.forEach(function (a) { IND_BY[a.key] = a; });
+const DROP_KINDS = [
+  { k: "질병", base: 0.07, c: "#063a74" },
+  { k: "가사", base: 0.02, c: "#063a74" },
+  { k: "부적응", base: 0.10, c: "#063a74" },
+  { k: "해외출국", base: 0.10, c: "oklch(0.62 0.1 250)" },
+  { k: "검정고시", base: 0.27, c: "oklch(0.7 0.08 250)" },
+  { k: "진로변경", base: 0.15, c: "oklch(0.7 0.08 250)" },
+  { k: "기타", base: 0.22, c: "oklch(0.76 0.03 250)" },
+  { k: "퇴학", base: 0.07, c: "oklch(0.62 0.17 32)" }
+];
+const ETC_KINDS = [
+  { k: "검정고시", base: 0.42 },
+  { k: "진로 변경", base: 0.24 },
+  { k: "미분류", base: 0.34 }
+];
+const BANDS = [
+  { max: 0.8, label: "평균의 80% 미만", bg: "oklch(0.88 0.05 250)", fg: "oklch(0.3 0.07 250)", solid: "oklch(0.5 0.11 252)" },
+  { max: 1.0, label: "평균 이하", bg: "oklch(0.95 0.02 250)", fg: "oklch(0.34 0.05 250)", solid: "oklch(0.78 0.06 245)" },
+  { max: 1.2, label: "평균 초과", bg: "#f3b7a8", fg: "oklch(0.36 0.09 40)", solid: "oklch(0.8 0.12 70)" },
+  { max: 99, label: "평균의 1.2배 이상", bg: "oklch(0.85 0.11 25)", fg: "oklch(0.42 0.15 25)", solid: "oklch(0.58 0.19 30)" }
+];
+function band(v, avg) { var r = avg > 0 ? v / avg : 1; for (var i = 0; i < BANDS.length; i++) if (r <= BANDS[i].max && (i !== 1 || r <= 1) && (i === 1 || r < BANDS[i].max)) return BANDS[i]; return BANDS[3]; }
+
+function prand(s, salt) {
+  var t = salt + "#" + s, x = 2166136261;
+  for (var i = 0; i < t.length; i++) { x ^= t.charCodeAt(i); x = (x * 16777619) >>> 0; }
+  x ^= x >>> 15; x = (x * 2246822507) >>> 0; x ^= x >>> 13;
+  return ((x >>> 8) % 100000) / 100000;
+}
+function f1(v) { return (Math.round(v * 10) / 10).toFixed(1); }
+function f2(v) { return v.toFixed(2); }
+function fi(v) { return Math.round(v).toLocaleString("ko-KR"); }
+function signed(v, d) { return (v > 0 ? "+" : v < 0 ? "−" : "") + (d === 1 ? f1(Math.abs(v)) : d === 0 ? fi(Math.abs(v)) : f2(Math.abs(v))); }
+function sum(a) { return a.reduce(function (x, y) { return x + y; }, 0); }
+const SUFFIX = ["제일", "중앙", "동", "서", "남", "북"];
+
+const SCHOOLS = (function () {
+  var out = [];
+  REGIONS.forEach(function (r) {
+    var n = 4 + Math.floor(prand(r.name, "n") * 3);
+    var short = r.name.replace(/(시|군)$/, "");
+    for (var i = 0; i < n; i++) {
+      var id = r.name + "|" + i;
+      var p = prand(id, "type");
+      var ti = p < 0.6 ? 0 : p < 0.72 ? 1 : p < 0.9 ? 2 : 3;
+      var dbase = r.base * STYPES[ti].m * (0.76 + prand(id, "d") * 0.58);
+      var nd = Math.max(0, Math.min(1, (dbase - 0.45) / 1.9));
+      var ind = {};
+      IND.forEach(function (a) { ind[a.key] = a.b0 + a.b1 * (a.k * nd + (1 - a.k) * prand(id, a.key)); });
+      out.push({
+        id: id, idx: out.length, name: short + SUFFIX[i] + "고", region: r.name, office: OFFICE[r.name],
+        ti: ti, type: STYPES[ti].k,
+        enroll: Math.round((240 + prand(id, "e") * 760) / 10) * 10,
+        dbase: dbase, ind: ind
+      });
+    }
+  });
+  return out;
+})();
+
+function enrollOf(s, year, grade) {
+  var decay = 1 - (2025 - year) * 0.012;
+  return Math.round(s.enroll * decay * (grade === "전체" ? 1 : 1 / 3));
+}
+function rateOf(s, year, grade) { return s.dbase * YF[year] * GF[grade]; }
+function indOf(s, key, year, grade) { var a = IND_BY[key]; return s.ind[key] * (0.92 + (year - 2020) * 0.016) * (a && a.grade === false ? 1 : GI[grade]); }
+
+function agg(list, year, grade) {
+  var en = 0, dr = 0, ind = {}, cnt = {};
+  IND.forEach(function (a) { cnt[a.key] = 0; });
+  list.forEach(function (s) {
+    var e = enrollOf(s, year, grade);
+    en += e; dr += rateOf(s, year, grade) / 100 * e;
+    IND.forEach(function (a) { cnt[a.key] += indOf(s, a.key, year, grade) / 100 * e; });
+  });
+  IND.forEach(function (a) { ind[a.key] = en ? cnt[a.key] / en * 100 : 0; });
+  return { enroll: en, drop: dr, rate: en ? dr / en * 100 : 0, ind: ind, cnt: cnt, n: list.length };
+}
+function pearson(xs, ys) {
+  var n = xs.length; if (n < 3) return 0;
+  var mx = sum(xs) / n, my = sum(ys) / n, sxy = 0, sxx = 0, syy = 0;
+  for (var i = 0; i < n; i++) { var dx = xs[i] - mx, dy = ys[i] - my; sxy += dx * dy; sxx += dx * dx; syy += dy * dy; }
+  return sxx > 0 && syy > 0 ? sxy / Math.sqrt(sxx * syy) : 0;
+}
+function linfit(xs, ys) {
+  var n = xs.length, mx = sum(xs) / n, my = sum(ys) / n, sxy = 0, sxx = 0;
+  for (var i = 0; i < n; i++) { sxy += (xs[i] - mx) * (ys[i] - my); sxx += (xs[i] - mx) * (xs[i] - mx); }
+  var b = sxx > 0 ? sxy / sxx : 0;
+  return { b: b, a: my - b * mx };
+}
+function rWords(r) {
+  var a = Math.abs(r);
+  if (a < 0.1) return "관계가 거의 없음";
+  var dir = r > 0 ? "양의 관계" : "음의 관계";
+  if (a < 0.3) return "약한 " + dir;
+  if (a < 0.5) return "중간 수준의 " + dir;
+  if (a < 0.7) return "다소 강한 " + dir;
+  return "강한 " + dir;
+}
+function splitCounts(total, shares) {
+  var raw = shares.map(function (s) { return s * total; });
+  var fl = raw.map(Math.floor), rest = total - sum(fl);
+  raw.map(function (v, i) { return { i: i, r: v - fl[i] }; }).sort(function (a, b) { return b.r - a.r; })
+    .slice(0, rest).forEach(function (o) { fl[o.i] += 1; });
+  return fl;
+}
+function arcPath(cx, cy, r0, r1, a0, a1) {
+  var p = function (r, a) { return (cx + r * Math.cos(a)).toFixed(2) + "," + (cy + r * Math.sin(a)).toFixed(2); };
+  var large = a1 - a0 > Math.PI ? 1 : 0;
+  return "M" + p(r1, a0) + "A" + r1 + "," + r1 + " 0 " + large + " 1 " + p(r1, a1) + "L" + p(r0, a1) + "A" + r0 + "," + r0 + " 0 " + large + " 0 " + p(r0, a0) + "Z";
+}
+
+class Component extends DCLogic {
+  state = { tab: "overview", year: 2025, office: "전체", sigun: "전체", school: "전체", stype: "전체", grade: "전체", indicator: "basic", attendView: "month", hoverSeg: -1, hoverId: null, defsOpen: false };
+
+
+  _select(s) {
+    var st = this.state;
+    var pre = st.school !== "전체" && st.preSel ? st.preSel : { office: st.office, stype: st.stype, sigun: st.sigun };
+    return Object.assign({ school: s.id, stype: s.type, hoverId: null, preSel: pre, schoolPage: null, scPick: false, activeQ: null }, st.sigun === "전체" ? { office: s.office } : {});
+  }
+
+  _unselect() {
+    var p = this.state.preSel;
+    return Object.assign({ school: "전체", hoverId: null, preSel: null, scPick: false }, p ? { office: p.office, stype: p.stype, sigun: p.sigun } : {});
+  }
+
+  _cartoRef = (el) => {
+    if (this._caRO) { this._caRO.disconnect(); this._caRO = null; }
+    if (!el || typeof ResizeObserver === "undefined") return;
+    this._caRO = new ResizeObserver((ents) => {
+      var w = Math.round(ents[0].contentRect.width);
+      if (w > 0 && Math.abs(w - (this.state.cartoW || 0)) > 2) this.setState({ cartoW: w });
+    });
+    this._caRO.observe(el);
+  };
+
+  _attRef = (el) => {
+    if (this._atRO) { this._atRO.disconnect(); this._atRO = null; }
+    if (!el || typeof ResizeObserver === "undefined") return;
+    this._atRO = new ResizeObserver((ents) => { var w = Math.round(ents[0].contentRect.width); if (w > 0 && Math.abs(w - (this.state.attW || 0)) > 2) this.setState({ attW: w }); });
+    this._atRO.observe(el);
+  };
+  _trendRef = (el) => {
+    if (this._trRO) { this._trRO.disconnect(); this._trRO = null; }
+    if (!el || typeof ResizeObserver === "undefined") return;
+    this._trRO = new ResizeObserver((ents) => {
+      var w = Math.round(ents[0].contentRect.width), hh = Math.round(ents[0].contentRect.height);
+      var ch = {}; if (w > 0 && Math.abs(w - (this.state.trendW || 0)) > 2) ch.trendW = w; if (hh > 0 && Math.abs(hh - (this.state.trendH || 0)) > 2) ch.trendH = hh;
+      if (Object.keys(ch).length) this.setState(ch);
+    });
+    this._trRO.observe(el);
+  };
+
+  _scatterRef = (el) => {
+    if (this._scRO) { this._scRO.disconnect(); this._scRO = null; }
+    if (!el || typeof ResizeObserver === "undefined") return;
+    this._scRO = new ResizeObserver(() => {
+      var w = Math.round(el.getBoundingClientRect().width);
+      if (w && w !== this.state.scW) this.setState({ scW: w });
+    });
+    this._scRO.observe(el);
+  };
+  _docClick = () => { if (this.state.p2Pin) this.setState({ p2Pin: null }); };
+  componentWillUnmount() { if (this._scRO) this._scRO.disconnect(); document.removeEventListener("click", this._docClick); }
+
+  _pGeom() {
+    var st = this.state, vw = window.innerWidth, vh = window.innerHeight;
+    var pw = st.pw || Math.min(st.modal === "etc" ? 760 : 820, vw - 32);
+    var estH = st.modal === "etc" ? 330 : 560, ph = st.ph || null;
+    var px = st.px != null ? st.px : vw - pw - 16, py = st.py != null ? st.py : Math.max(16, vh - Math.min(estH, vh - 32) - 16);
+    return { pw: pw, ph: ph, px: px, py: py, vw: vw, vh: vh };
+  }
+  _clampP(px, py, pw) { var vw = window.innerWidth, vh = window.innerHeight; return { px: Math.max(120 - pw, Math.min(vw - 120, px)), py: Math.max(0, Math.min(vh - 40, py)) }; }
+  _pDrag = (e) => {
+    if (e.button !== 0) return; e.preventDefault();
+    var g = this._pGeom(), sx = e.clientX, sy = e.clientY, pe = e.currentTarget.closest("[role=dialog]");
+    if (pe) { var rc = pe.getBoundingClientRect(); g.px = rc.left; g.py = rc.top; }
+    var mv = (ev) => { this.setState(this._clampP(g.px + ev.clientX - sx, g.py + ev.clientY - sy, g.pw)); };
+    var up = () => { window.removeEventListener("mousemove", mv); window.removeEventListener("mouseup", up); };
+    window.addEventListener("mousemove", mv); window.addEventListener("mouseup", up);
+  };
+  _pResize = (e) => {
+    if (e.button !== 0) return; e.preventDefault(); e.stopPropagation();
+    var g = this._pGeom(), sx = e.clientX, sy = e.clientY, pe = e.currentTarget.closest("[role=dialog]");
+    if (pe) { var rc = pe.getBoundingClientRect(); g.px = rc.left; g.py = rc.top; g.pw = rc.width; g.ph = rc.height; }
+    var mv = (ev) => { this.setState({ px: g.px, py: g.py, pw: Math.max(420, Math.min(g.vw - g.px - 4, g.pw + ev.clientX - sx)), ph: Math.max(240, Math.min(g.vh - g.py - 4, g.ph + ev.clientY - sy)) }); };
+    var up = () => { window.removeEventListener("mousemove", mv); window.removeEventListener("mouseup", up); };
+    window.addEventListener("mousemove", mv); window.addEventListener("mouseup", up);
+  };
+  _dl(name, header, rows) {
+    var x = function (v) { return String(v == null ? "" : v).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); };
+    var all = [header].concat(rows), wd = header.map(function (_, c) { var m = 4; all.forEach(function (r) { var t = String(r[c] == null ? "" : r[c]); var w = 0; for (var i = 0; i < t.length; i++) w += t.charCodeAt(i) > 255 ? 2 : 1; if (w > m) m = w; }); return Math.min(60, m + 2) * 6.2; });
+    var bd = '<Borders><Border ss:Position="Top" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#9AA4AE"/><Border ss:Position="Bottom" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#9AA4AE"/><Border ss:Position="Left" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#9AA4AE"/><Border ss:Position="Right" ss:LineStyle="Continuous" ss:Weight="1" ss:Color="#9AA4AE"/></Borders>';
+    var xml = '<?xml version="1.0" encoding="UTF-8"?><?mso-application progid="Excel.Sheet"?><Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet"><Styles>'
+      + '<Style ss:ID="h"><Alignment ss:Horizontal="Center" ss:Vertical="Center"/>' + bd + '<Font ss:FontName="맑은 고딕" ss:Bold="1" ss:Color="#FFFFFF"/><Interior ss:Color="#063A74" ss:Pattern="Solid"/></Style>'
+      + '<Style ss:ID="t"><Alignment ss:Vertical="Center"/>' + bd + '<Font ss:FontName="맑은 고딕"/></Style>'
+      + '<Style ss:ID="n"><Alignment ss:Horizontal="Right" ss:Vertical="Center"/>' + bd + '<Font ss:FontName="맑은 고딕"/></Style>'
+      + '</Styles><Worksheet ss:Name="' + x(String(name).slice(0, 30).replace(/[\\/?*\[\]:]/g, " ")) + '"><Table>'
+      + wd.map(function (w) { return '<Column ss:Width="' + w.toFixed(0) + '"/>'; }).join("")
+      + '<Row ss:Height="22">' + header.map(function (v) { return '<Cell ss:StyleID="h"><Data ss:Type="String">' + x(v) + '</Data></Cell>'; }).join("") + '</Row>'
+      + rows.map(function (r) { return '<Row>' + r.map(function (v) { var num = typeof v === "number" || (typeof v === "string" && /^-?\d+(\.\d+)?$/.test(v.trim())); return num ? '<Cell ss:StyleID="n"><Data ss:Type="Number">' + Number(v) + '</Data></Cell>' : '<Cell ss:StyleID="t"><Data ss:Type="String">' + x(v) + '</Data></Cell>'; }).join("") + '</Row>'; }).join("")
+      + '</Table><WorksheetOptions xmlns="urn:schemas-microsoft-com:office:excel"><FreezePanes/><FrozenNoSplit/><SplitHorizontal>1</SplitHorizontal><TopRowBottomPane>1</TopRowBottomPane><ActivePane>2</ActivePane></WorksheetOptions></Worksheet></Workbook>';
+    var blob = new Blob([xml], { type: "application/vnd.ms-excel" }), url = URL.createObjectURL(blob), a = document.createElement("a");
+    a.href = url; a.download = name + ".xls"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  }
+  _onKey = (e) => { if (e.key === "Escape" && this.state.modal) this.setState({ modal: null }); };
+  _onResize = () => { var w = window.innerWidth; if (Math.abs(w - (this.state.vw || 0)) > 4) this.setState({ vw: w }); };
+
+  componentDidMount() {
+    document.addEventListener("keydown", this._onKey);
+    window.addEventListener("resize", this._onResize); this._onResize();
+    document.addEventListener("click", this._docClick);
+    var y = parseInt(this.props.initialYear, 10);
+    if (YEARS.indexOf(y) >= 0) this.setState({ year: y });
+    var ik = this.props.initialIndicator;
+    if (ik && IND.some(function (a) { return a.key === ik; })) this.setState({ indicator: ik });
+  }
+
+  renderVals() {
+    var self = this, st = this.state;
+    var isOverview = (st.tab || "overview") === "overview";
+    var regionSel = st.sigun !== "전체" || (st.office !== "전체");
+    var year = st.year, grade = isOverview ? st.grade : "전체";
+    var prevYear = year > YEARS[0] ? year - 1 : year;
+    var restricted = (this.props.userRole || "전체 공개") !== "전체 공개";
+    var attendDef = this.props.attendDefinition || "연간 미인정 결석·지각·조퇴·결과 합계가 기준 이상인 학생 수 ÷ 재적 학생 수 (구체 기준은 데이터 관리카드에서 정의)";
+    var nameOf = function (s) { return restricted ? "비공개 " + s.type + " #" + String(s.idx + 1).padStart(3, "0") : s.name; };
+    var axis = IND[0];
+    IND.forEach(function (a) { if (a.key === st.indicator) axis = a; });
+
+    var svgText = function (key, x, y, text, o) {
+      o = o || {};
+      return React.createElement("text", {
+        key: key, x: x, y: y, textAnchor: o.anchor || "middle", fontSize: o.size || 11,
+        fill: o.fill || "oklch(0.62 0.015 255)", fontWeight: o.weight || 400,
+        fontFamily: "'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif",
+        transform: o.transform, stroke: o.halo ? "#fff" : undefined, strokeWidth: o.halo ? 3 : undefined,
+        paintOrder: o.halo ? "stroke" : undefined, style: { pointerEvents: "none" }
+      }, text);
+    };
+
+    // ---- scope
+    var typeMatch = function (s) { return st.stype === "전체" || s.type === st.stype; };
+    var schoolPool = SCHOOLS.filter(function (s) {
+      return (st.office === "전체" || s.office === st.office) && (st.sigun === "전체" || s.region === st.sigun) && typeMatch(s);
+    });
+    var selSchool = st.school !== "전체" ? SCHOOLS.filter(function (s) { return s.id === st.school; })[0] : null;
+    var scope = selSchool ? [selSchool] : (schoolPool.length ? schoolPool : SCHOOLS);
+    var cur = agg(scope, year, grade), prev = agg(scope, prevYear, grade);
+    var prov = agg(SCHOOLS, year, grade);
+    var scopeName = selSchool ? nameOf(selSchool) : st.sigun !== "전체" ? st.sigun : (st.office !== "전체") ? st.office : "경기도 전체";
+    var gradeName = grade === "전체" ? "전 학년" : grade;
+
+    // ---- condition chips
+    var defYear = parseInt(self.props.initialYear, 10) || 2025;
+    var cl = function (o) { return Object.assign(self.state.school !== "전체" ? self._unselect() : {}, { activeQ: null, hoverId: null, schoolPage: null }, o); };
+    var condChips = [{ label: year + "학년도", clearable: year !== defYear, onClear: function () { self.setState({ year: defYear }); } }];
+    if (st.sigun !== "전체") condChips.push({ label: "시·군 · " + st.sigun, clearable: true, onClear: function () { self.setState(cl({ sigun: "전체", school: "전체", preSel: null })); } });
+    if (st.office !== "전체") condChips.push({ label: st.office, clearable: true, onClear: function () { self.setState(cl({ office: "전체", school: "전체", preSel: null })); } });
+    if (!regionSel) condChips.push({ label: "경기도 전체", clearable: false });
+    if (selSchool) condChips.push({ label: nameOf(selSchool), clearable: true, onClear: function () { self.setState(self._unselect()); } });
+    if (st.stype !== "전체") condChips.push({ label: st.stype, clearable: true, onClear: function () { self.setState(cl({ stype: "전체", school: "전체", preSel: null })); } });
+    if (grade !== "전체") condChips.push({ label: grade, clearable: true, onClear: function () { self.setState({ grade: "전체" }); } });
+    var showBack = st.office !== "전체" || st.sigun !== "전체" || !!selSchool;
+    var backToAll = function () { self.setState({ office: "전체", sigun: "전체", school: "전체", stype: st.preSel ? st.preSel.stype : st.stype, preSel: null }); };
+
+    // ---- filters
+    var mk = function (label, value, options, onChange) {
+      return {
+        label: label, value: value, onChange: onChange, options: options,
+        style: {
+          appearance: "none", WebkitAppearance: "none", width: "100%", minWidth: 0, textOverflow: "ellipsis", background: "#fff",
+          border: "1px solid " + (value !== "전체" ? "oklch(0.72 0.09 250)" : "#cdd1d5"),
+          borderRadius: 2, padding: "5px 26px 5px 10px", fontSize: 13, fontFamily: "inherit",
+          color: "#1e2124", cursor: "pointer", textOverflow: "ellipsis"
+        }
+      };
+    };
+    var opt = function (arr) { return arr.map(function (v) { return { value: String(v), label: String(v) }; }); };
+    var schoolOpts = schoolPool.map(function (s) { return { value: s.id, label: nameOf(s) + (restricted ? "" : " (" + s.region.replace(/(시|군)$/, "") + ")") }; });
+    var filters = [
+      mk("학년도", String(year), opt(YEARS.slice().sort(function (x, y) { return y - x; })), function (e) { self.setState({ year: parseInt(e.target.value, 10) }); }),
+      mk("교육지원청", st.office, opt(["전체"].concat(OFFICES)), function (e) { self.setState(cl({ office: e.target.value, sigun: "전체", school: "전체", preSel: null })); }),
+      mk("학교유형", st.stype, opt(["전체"].concat(STYPES.map(function (t) { return t.k; }))), function (e) { self.setState(cl({ stype: e.target.value, school: "전체", preSel: null })); }),
+      mk("학교", st.school, [{ value: "전체", label: "전체" }].concat(schoolOpts), function (e) {
+        var v = e.target.value;
+        if (v === "전체") { self.setState(self._unselect()); return; }
+        var s = SCHOOLS.filter(function (x) { return x.id === v; })[0];
+        if (s) self.setState(self._select(s));
+      }),
+      mk("학년", grade, opt(GRADES), function (e) { self.setState({ grade: e.target.value }); })
+    ];
+    filters = isOverview ? filters : [filters[0], filters[1], filters[2], filters[3]];
+    var filtersActive = showBack || st.stype !== "전체" || grade !== "전체" || year !== 2025;
+    var resetFilters = function () { self.setState({ preSel: null, year: parseInt(self.props.initialYear, 10) || 2025, office: "전체", sigun: "전체", school: "전체", stype: "전체", grade: "전체", scType: "전체", activeQ: null, hoverId: null, schoolQ: "", schoolPage: null, selReason: null, scPick: false }); };
+    var clearRegion = function () { self.setState({ office: "전체", sigun: "전체", school: "전체", hoverId: null, activeQ: null, schoolQ: "", schoolPage: null, preSel: null, stype: st.preSel ? st.preSel.stype : st.stype }); };
+    var clearRegionStyle = "appearance:none; white-space:nowrap; font-size:12.5px; font-weight:600; font-family:inherit; border-radius:2px; padding:3px 10px; background:#fff; border:1px solid oklch(0.78 0.06 250); color:#063a74; cursor:pointer";
+
+    // ---- regions
+    var regionAgg = REGIONS.map(function (r) {
+      var list = SCHOOLS.filter(function (s) { return s.region === r.name && typeMatch(s); });
+      var a = agg(list, year, grade), p = agg(list, prevYear, grade);
+      return { r: r, a: a, delta: a.rate - p.rate };
+    });
+    var overCount = regionAgg.filter(function (x) { return x.a.rate > prov.rate; }).length;
+
+    // ---- KPI
+    var badge = function (text, tone) { return { text: text, style: { background: tone.bg, color: tone.fg, fontSize: 12, fontWeight: 600, borderRadius: 4, padding: "2px 7px", whiteSpace: "nowrap", flex: "none" } }; };
+    var dRate = cur.rate - prev.rate, vsProv = cur.rate - prov.rate, bCur = band(cur.rate, prov.rate);
+    var ORANGE = "#de3412", BLUE = "#063a74", GRAY = "oklch(0.58 0.015 255)", INK = "#1e2124";
+    var hiStyle = function (c) { return { fontFamily: "'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif", fontWeight: 600, color: c, whiteSpace: "nowrap" }; };
+    var kpi = function (label, value, unit, b, subPre, subHi, subHiColor, valueColor) {
+      return {
+        label: label, value: value, unit: unit, showPill: false, pill: "", pillStyle: {}, showBadge: !!b, badge: b ? b.text : "", badgeStyle: b ? b.style : {},
+        subPre: subPre, subHi: subHi || "", subPost: "", subHiStyle: hiStyle(subHiColor || GRAY),
+        valueStyle: { fontFamily: "'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif", fontSize: 24, fontWeight: 600, letterSpacing: "-0.02em", color: valueColor || INK },
+        yoy: "", yoyNote: "", yoyStyle: {}
+      };
+    };
+    var vsR = Math.round(vsProv * 100) / 100;
+    var pillTone = vsR > 0 ? { bg: "#fdeeea", fg: "#de3412", bd: "#f3b7a8", arrow: "▲" }
+      : vsR < 0 ? { bg: "oklch(0.95 0.03 250)", fg: "#063a74", bd: "oklch(0.86 0.05 250)", arrow: "▼" }
+        : { bg: "oklch(0.96 0.004 250)", fg: "oklch(0.5 0.015 255)", bd: "#cdd1d5", arrow: "–" };
+    var vsPill = {
+      text: pillTone.arrow + " " + (vsR > 0 ? "+" : vsR < 0 ? "−" : "") + f2(Math.abs(vsR)) + "%p",
+      style: {
+        marginLeft: 6, alignSelf: "center", fontFamily: "'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif", fontSize: 14, fontWeight: 700,
+        color: pillTone.fg, background: pillTone.bg, border: "1px solid " + pillTone.bd,
+        borderRadius: 2, padding: "2px 8px", whiteSpace: "nowrap", lineHeight: 1.3
+      }
+    };
+    var overPct = Math.round(overCount / 31 * 1000) / 10;
+    var yoyS = function (v) { return { fontFamily: "'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif", fontSize: 13, fontWeight: 700, whiteSpace: "nowrap", color: v > 0.0049 ? ORANGE : v < -0.0049 ? BLUE : GRAY }; };
+    var dDrop = cur.drop - prev.drop;
+    var kpis = [
+      kpi("학업중단 학생 수", fi(cur.drop), "명", badge(year + "학년도", BANDS[0]), scopeName + " · 재적 " + fi(cur.enroll) + "명 · " + cur.n + "개교"),
+      Object.assign(kpi("학업중단율", f2(cur.rate), "%", null, "경기도 평균(" + f2(prov.rate) + "%) 대비", (vsR > 0 ? "+" : vsR < 0 ? "−" : "") + f2(Math.abs(vsR)) + "%p", pillTone.fg), { subPost: vsR > 0 ? "높음" : vsR < 0 ? "낮음" : "동일", showPill: true, pill: vsPill.text, pillStyle: vsPill.style }),
+    ];
+    kpis[0].yoy = (dDrop > 0 ? "+" : dDrop < 0 ? "−" : "") + fi(Math.abs(Math.round(dDrop))) + "명"; kpis[0].yoyStyle = yoyS(dDrop); kpis[0].yoyNote = "(" + prevYear + "학년도 " + fi(prev.drop) + "명)";
+    kpis[1].yoy = signed(dRate, 2) + "%p"; kpis[1].yoyStyle = yoyS(dRate); kpis[1].yoyNote = "(" + prevYear + "학년도 " + f2(prev.rate) + "%)";
+
+    // ---- cartogram
+    var C_OVER = "oklch(0.64 0.16 40)", C_UNDER = "oklch(0.74 0.06 250)";
+    var legend = [["평균 초과", C_OVER], ["평균 이하", C_UNDER]].map(function (b) { return { label: b[0], style: { width: 14, height: 10, borderRadius: 2, background: b[1], display: "inline-block" } }; });
+    var schoolLevel = isOverview ? regionSel : true;
+    var tileStyle = function (b, sel, dim, pos) {
+      return Object.assign(pos || {}, {
+        display: "flex", flexDirection: "column", alignItems: "flex-start", justifyContent: "center", gap: 0, padding: "1px 4px",
+        background: b.bg, color: b.fg, borderRadius: 2, border: sel ? "2px solid #063a74" : "1px solid oklch(0.9 0.01 250 / 0.6)",
+        opacity: dim ? 0.55 : 1, textAlign: "left", cursor: "pointer", fontFamily: "inherit", minWidth: 0, overflow: "hidden"
+      });
+    };
+    var cw = st.cartoW || 1200, tCols = cw >= 820 ? 8 : cw >= 560 ? 6 : 4;
+    var tileGrid = "display:grid; grid-template-columns:repeat(" + tCols + ", minmax(0, 1fr)); gap:4px; margin-top:8px";
+    var barRows = [], barTicks = [], barAvg = {};
+    var bSlot = Math.max(8, ((st.cartoW || 1100) - 40) / 31), bRot = bSlot < 36, barShowVal = bSlot >= 25;
+    var barNameRow = "display:flex; gap:3px; padding:4px 3px 0; height:" + (bRot ? 40 : 18) + "px";
+    var barNameStyle = bRot ? { position: "absolute", right: "50%", top: 2, transform: "rotate(-45deg)", transformOrigin: "100% 50%", fontSize: 11, fontWeight: 600, color: "#1e2124", whiteSpace: "nowrap", lineHeight: 1.1 } : { position: "absolute", left: -4, right: -4, top: 0, textAlign: "center", fontSize: 11, fontWeight: 600, color: "#1e2124", whiteSpace: "nowrap", lineHeight: 1.2 };
+    var shareOfR = function (key) { var raw = DROP_KINDS.map(function (d) { return d.base * (0.78 + prand(key + d.k, "dk") * 0.44); }); var t = sum(raw); return raw.map(function (v) { return v / t; }); };
+    regionAgg.forEach(function (x) { x.kc = splitCounts(Math.round(x.a.drop), shareOfR(x.r.name + "|" + grade + "|" + st.stype + "|" + year)); });
+    var provKc = DROP_KINDS.map(function (d, i) { return sum(regionAgg.map(function (x) { return x.kc[i]; })); });
+    var provKTot = sum(provKc), provEn = sum(regionAgg.map(function (x) { return x.a.enroll; }));
+    var barAvgTick = { display: "none" };
+    var bkIdx = st.selReason ? DROP_KINDS.findIndex(function (d) { return d.k === st.selReason; }) : -1;
+    var mix = false, hlIdx = -1;
+    bkIdx = -1;
+    var STACK_C = ["#063a74", "oklch(0.5 0.13 258)", "oklch(0.62 0.12 235)", "oklch(0.72 0.1 205)", "oklch(0.78 0.09 170)", "oklch(0.84 0.08 120)", "oklch(0.86 0.015 250)", "oklch(0.6 0.19 30)"];
+    var bVal = function (x) { return bkIdx < 0 ? x.a.rate : (x.a.enroll ? x.kc[bkIdx] / x.a.enroll * 100 : 0); };
+    var bAvgV = bkIdx < 0 ? prov.rate : (provEn ? provKc[bkIdx] / provEn * 100 : 0);
+    if (!schoolLevel) {
+      var rs = regionAgg.slice().sort(function (a, b) { return a.r.name.localeCompare(b.r.name, "ko"); });
+      var bRaw = Math.max.apply(null, rs.map(bVal).concat([bAvgV])) * 1.15 || 1;
+      var bU = Math.pow(10, Math.floor(Math.log10(bRaw))) * 0.5, bMax = Math.ceil(bRaw / bU) * bU, bTs = bU; while (bMax / bTs > 6) bTs *= 2;
+      var bDec = bTs >= 1 ? 0 : bTs >= 0.1 ? 1 : 2; if (Math.abs(Math.round(bTs * Math.pow(10, bDec)) - bTs * Math.pow(10, bDec)) > 1e-6) bDec++;
+      if (mix) { [0, 25, 50, 75, 100].forEach(function (pp) { barTicks.push({ label: pp + "", labelStyle: { position: "absolute", right: 4, bottom: "calc(" + pp + "% - 7px)", fontSize: 11, color: "oklch(0.55 0.015 255)", lineHeight: "14px", whiteSpace: "nowrap" }, gridStyle: { position: "absolute", left: 0, right: 0, bottom: pp + "%", height: 0, borderTop: pp ? "1px solid oklch(0.95 0.005 250)" : "none", pointerEvents: "none" } }); }); } else
+      for (var bt = 0; bt <= bMax + 1e-9; bt += bTs) { var pp = bt / bMax * 100; barTicks.push({ label: bt.toFixed(bDec),
+        labelStyle: { position: "absolute", right: 4, bottom: "calc(" + pp + "% - 7px)", fontSize: 11, color: "oklch(0.55 0.015 255)", lineHeight: "14px", whiteSpace: "nowrap" },
+        gridStyle: { position: "absolute", left: 0, right: 0, bottom: pp + "%", height: 0, borderTop: bt ? "1px solid oklch(0.95 0.005 250)" : "none", pointerEvents: "none" } }); }
+      barAvg = { position: "absolute", left: 0, right: 0, bottom: (bAvgV / bMax * 100) + "%", height: 0, borderTop: "1.5px dashed oklch(0.4 0.02 255)", pointerEvents: "none" };
+      var avgPP = bAvgV / bMax * 100;
+      barTicks.forEach(function (t) { var tp = parseFloat(t.label) / bMax * 100; if (Math.abs(tp - avgPP) < 7) t.labelStyle = Object.assign({}, t.labelStyle, { visibility: "hidden" }); });
+      barAvgTick = { position: "absolute", right: 2, bottom: "calc(" + avgPP + "% - 8px)", fontSize: 11, fontWeight: 700, color: "#1e2124", background: "#fff", padding: "0 2px", lineHeight: "16px", whiteSpace: "nowrap" };
+      if (mix) barAvg = { display: "none" };
+      barRows = rs.map(function (x) {
+        var bv = bVal(x), b = band(bv, bAvgV), dl = x.delta;
+        var hp = bv / bMax * 100;
+        var kTot = sum(x.kc) || 1;
+        var segs = mix ? x.kc.map(function (c, i) { return { style: { flex: "none", height: (c / kTot * 100) + "%", background: STACK_C[i], opacity: hlIdx >= 0 && hlIdx !== i ? 0.22 : 1, boxShadow: c ? "inset 0 1px 0 #fff" : "none" } }; }) : [];
+        return { segs: segs, name: x.r.name, short: x.r.name.replace(/(시|군)$/, ""), rateNum: f2(bv),
+          vbar: { position: "absolute", left: "12%", right: "12%", bottom: 0, height: mix ? "100%" : hp + "%", background: mix ? "transparent" : bv > bAvgV ? C_OVER : C_UNDER, display: "flex", flexDirection: "column-reverse", overflow: "hidden", borderRadius: "2px 2px 0 0", outline: st.sigun === x.r.name ? "2px solid #1e2124" : "none" },
+          vval: { position: "absolute", left: -6, right: -6, bottom: "calc(" + hp + "% + 2px)", textAlign: "center", fontSize: 10.5, fontWeight: 700, color: "#1e2124", whiteSpace: "nowrap", lineHeight: 1.2 },
+          rate: f2(x.a.rate) + "%", delta: signed(dl, 2) + "%p", count: fi(x.a.drop) + "명",
+          title: mix ? x.r.name + " · " + year + "학년도 학업중단 " + fi(x.a.drop) + "명\n" + DROP_KINDS.map(function (d, i) { return d.k + " " + fi(x.kc[i]) + "명 (" + f1(x.kc[i] / kTot * 100) + "%)"; }).join("\n") : bkIdx < 0 ? x.r.name + " · " + year + "학년도 학업중단율 " + f2(x.a.rate) + "% · 전년 대비 " + signed(dl, 2) + "%p · " + fi(x.a.drop) + "명" : x.r.name + " · " + year + "학년도 " + DROP_KINDS[bkIdx].k + " " + fi(x.kc[bkIdx]) + "명 · 재적 대비 " + f2(bv) + "% · 학업중단 중 " + f1(x.a.drop ? x.kc[bkIdx] / Math.round(x.a.drop) * 100 : 0) + "% (경기도 " + f1(provKTot ? provKc[bkIdx] / provKTot * 100 : 0) + "%)",
+          onClick: function () { self.setState({ sigun: x.r.name, school: "전체", hoverId: null }); },
+          bar: { position: "absolute", left: 0, top: 0, bottom: 0, width: (x.a.rate / bMax * 100) + "%", background: b.solid, borderRadius: 2 },
+          mark: { position: "absolute", top: -3, bottom: -3, left: (prov.rate / bMax * 100) + "%", width: 0, borderLeft: "1.5px dashed oklch(0.4 0.02 255)" },
+          deltaStyle: { fontFamily: "'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif", fontSize: 12, fontWeight: 600, textAlign: "right", whiteSpace: "nowrap", color: dl > 0.005 ? "#de3412" : dl < -0.005 ? "#063a74" : "oklch(0.58 0.015 255)" } };
+      });
+    }
+    var cartoView = st.cartoView === "bar" ? "bar" : "tile";
+    var tiles, overSum, cartoTitle, cartoSub, cartoNote;
+    if (!schoolLevel) {
+      tiles = regionAgg.slice().sort(function (a, b) { return a.r.name.localeCompare(b.r.name, "ko"); }).map(function (x) {
+        var b = band(x.a.rate, prov.rate), selR = st.sigun === x.r.name;
+        return {
+          name: x.r.name, short: x.r.name.replace(/(시|군)$/, ""), rate: f2(x.a.rate), count: fi(x.a.drop) + "명", delta: signed(x.delta, 2),
+          title: x.r.name + " · " + OFFICE[x.r.name] + " · " + year + "학년도 학업중단율 " + f2(x.a.rate) + "% · " + fi(x.a.drop) + "명 · 전년 대비 " + signed(x.delta, 2) + "%p",
+          onClick: function () { self.setState({ sigun: x.r.name, school: "전체", hoverId: null }); },
+          style: tileStyle(b, selR, false, { padding: "6px 8px", gap: 2, justifyContent: "flex-start", minHeight: 66 })
+        };
+      });
+      var overR = regionAgg.filter(function (x) { return x.a.rate > prov.rate; });
+      var oE = sum(overR.map(function (x) { return x.a.enroll; })), oD = sum(overR.map(function (x) { return x.a.drop; }));
+      overSum = { showRate: true, label: "경기도 평균(" + f2(prov.rate) + "%) 초과 시·군", count: overR.length + "개", total: "/ 전체 31개", rateLabel: "초과 시·군 평균 학업중단율", rate: oE ? f2(oD / oE * 100) + "%" : "—" };
+      cartoTitle = "시·군별 학업중단 현황";
+      cartoSub = year + "학년도 · 학업중단율(%) · 전년 대비 증감(%p) · 학업중단 학생 수";
+      cartoNote = "※ 시·군을 누르면 관할 교육지원청 소속 학교별 현황으로 바뀝니다";
+    } else {
+      var lvl = schoolPool.slice().sort(function (a, b) { return a.name.localeCompare(b.name, "ko"); });
+      var sAgg = lvl.map(function (s) { return { s: s, a: agg([s], year, grade), p: agg([s], prevYear, grade) }; });
+      tiles = sAgg.map(function (x) {
+        var b = band(x.a.rate, prov.rate), sel = !!selSchool && selSchool.id === x.s.id, dim = !!selSchool && !sel, dl = x.a.rate - x.p.rate;
+        return {
+          short: nameOf(x.s), rate: f2(x.a.rate), count: fi(x.a.drop) + "명", delta: signed(dl, 2),
+          title: nameOf(x.s) + " · " + x.s.type + " · " + year + "학년도 학업중단율 " + f2(x.a.rate) + "% · " + fi(x.a.drop) + "명 · 전년 대비 " + signed(dl, 2) + "%p",
+          onClick: function () { self.setState({ school: sel ? "전체" : x.s.id }); },
+          style: tileStyle(b, sel, dim)
+        };
+      });
+      var sumBase = selSchool ? [{ s: selSchool, a: agg([selSchool], year, grade) }] : sAgg;
+      var overS = sumBase.filter(function (x) { return x.a.rate > prov.rate; });
+      var sE = sum(overS.map(function (x) { return x.a.enroll; })), sD = sum(overS.map(function (x) { return x.a.drop; }));
+      overSum = { showRate: false,  label: "경기도 평균(" + f2(prov.rate) + "%) 초과 학교", count: overS.length + "개교", total: "/ 전체 " + sumBase.length + "개교", rateLabel: "초과 학교 평균 학업중단율", rate: sE ? f2(sD / sE * 100) + "%" : "—" };
+      cartoTitle = (st.sigun !== "전체" ? st.sigun + " · " : "") + st.office + " 학교별 학업중단 현황";
+      cartoSub = year + "학년도 · 학교의 교육지원청 소속 기준 · 가나다순(순위 아님) · 학업중단율 · 전년 대비 · 학생 수";
+      cartoNote = "※ 학교를 누르면 해당 학교 기준으로 바뀝니다 · 상단 '경기도 전체로'를 누르면 시·군 현황으로 돌아갑니다";
+    }
+
+    var TYPE_PILL = {};
+    var typeChip = function (t) { var g = ["#eef0f2", "#464c53"]; return "flex:none; font-size:10px; font-weight:700; line-height:1.3; padding:1px 7px; border-radius:99px; white-space:nowrap; background:" + g[0] + "; color:" + g[1]; };
+    var dlSchool = [], schoolCount = 0, schoolRows = [], pager = { show: false, count: "" };
+    if (schoolLevel) {
+      var areaName = st.sigun !== "전체" ? st.sigun : "";
+      var userType = selSchool ? (st.preSel ? st.preSel.stype : "전체") : st.stype;
+      var listPool = (selSchool && st.scPick) ? [selSchool] : selSchool ? SCHOOLS.filter(function (s) {
+        return (st.office === "전체" || s.office === st.office) && (st.sigun === "전체" || s.region === st.sigun) && (userType === "전체" || s.type === userType);
+      }) : schoolPool;
+      var areaKind = st.sigun !== "전체" ? "시·군" : st.office !== "전체" ? "교육지원청" : "경기도";
+      cartoTitle = (areaName ? areaName + " " : "") + "학교별 학업중단 현황";
+      var rangeNote = selSchool
+        ? (userType === "전체" ? areaKind + " 전체 학교 · 학교유형·학교 선택 미적용" : areaKind + " " + userType + " 전체(직접 선택) · 학교 선택 미적용")
+        : (st.stype !== "전체" ? st.stype : "전체 유형");
+      cartoSub = year + "학년도 · " + gradeName + " · " + rangeNote + " · " + listPool.length + "개교" + (selSchool ? " 중 " + nameOf(selSchool) + " 선택" : "") + " · 가나다순(순위 아님)";
+      cartoNote = isOverview ? "※ 학교를 누르면 이 화면의 KPI·사유 구성·추이가 해당 학교 기준으로 바뀌고, 다시 누르면 해제됩니다" : "※ 학교를 누르면 아래 지표가 해당 학교 기준으로 바뀌고, 다시 누르면 해제됩니다 · 학교 목록은 그대로 유지됩니다";
+      var mkSchoolRow = function (s) {
+        var a = agg([s], year, grade), p = agg([s], prevYear, grade), dl = a.rate - p.rate, on = !!selSchool && selSchool.id === s.id;
+        return {
+          on: on, name: nameOf(s), type: s.type, typeStyle: typeChip(s.type), count: fi(a.drop) + "명", rate: f2(a.rate) + "%", delta: signed(dl, 2),
+          rateStyle: "font-family:'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif; font-size:13px; font-weight:600; color:" + (a.rate > prov.rate ? "#de3412" : "#1e2124"),
+          deltaStyle: "font-family:'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif; font-size:12.5px; text-align:right; color:" + (dl > 0.005 ? "#de3412" : dl < -0.005 ? "#063a74" : "oklch(0.58 0.015 255)"),
+          style: "appearance:none; border:none; border-bottom:1px solid oklch(0.95 0.005 250); display:grid; grid-template-columns:minmax(0, 1.6fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.1fr); gap:8px; align-items:center; padding:5px 8px; text-align:left; font-family:inherit; cursor:pointer; background:" + (on ? "oklch(0.95 0.03 250)" : "transparent"),
+          onClick: function () { self.setState(Object.assign(on ? self._unselect() : self._select(s), { scPick: false })); }
+        };
+      };
+      self._mkSchoolRow = mkSchoolRow;
+      schoolRows = listPool.slice().sort(function (a, b) { return a.name.localeCompare(b.name, "ko"); }).map(mkSchoolRow);
+      var sq = (st.schoolQ || "").trim(), allRows = sq ? schoolRows.filter(function (r) { return r.name.indexOf(sq) >= 0; }) : schoolRows;
+      var PS = isOverview ? 12 : 100000, pages = Math.max(1, Math.ceil(allRows.length / PS)), selIdx = allRows.findIndex(function (r) { return r.on; });
+      var pg = st.schoolPage == null ? (selIdx >= 0 ? Math.floor(selIdx / PS) : 0) : Math.min(st.schoolPage, pages - 1);
+      var pbs = function (dis) { return "appearance:none; font-size:12px; font-weight:600; padding:2px 9px; border:1px solid #cdd1d5; border-radius:2px; background:#fff; color:" + (dis ? "oklch(0.75 0.01 255)" : "#063a74") + "; cursor:" + (dis ? "default" : "pointer"); };
+      schoolCount = allRows.length; dlSchool = allRows;
+      pager = { show: pages > 1, count: allRows.length + "개교", label: (pg + 1) + " / " + pages, noPrev: pg <= 0, noNext: pg >= pages - 1, prevStyle: pbs(pg <= 0), nextStyle: pbs(pg >= pages - 1),
+        prev: function () { if (pg > 0) self.setState({ schoolPage: pg - 1 }); }, next: function () { if (pg < pages - 1) self.setState({ schoolPage: pg + 1 }); } };
+      schoolRows = allRows.slice(pg * PS, pg * PS + PS);
+    }
+
+    // ---- trend
+    var rIdx = st.selReason ? DROP_KINDS.findIndex(function (d) { return d.k === st.selReason; }) : -1;
+    var dKey0 = scopeName + "|" + grade + "|" + st.stype;
+    var cntSeries = [], rateSeries = [];
+    YEARS.forEach(function (y) {
+      var a = agg(scope, y, grade), tot = Math.round(a.drop);
+      if (rIdx >= 0) {
+        var raw = DROP_KINDS.map(function (d) { return d.base * (0.78 + prand(dKey0 + "|" + y + d.k, "dk") * 0.44); });
+        var t = sum(raw), c = splitCounts(tot, raw.map(function (v) { return v / t; }))[rIdx];
+        cntSeries.push(c); rateSeries.push(tot ? c / tot * 100 : 0);
+      } else { cntSeries.push(tot); rateSeries.push(a.rate); }
+    });
+    var provSeries = rIdx >= 0 ? [] : YEARS.map(function (y) { return agg(SCHOOLS, y, grade).rate; });
+    var nice = function (raw) { var p = Math.pow(10, Math.floor(Math.log10(raw || 1))); return [1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].map(function (m) { return m * p; }).filter(function (v) { return v >= raw; })[0]; };
+    var cMax = Math.max.apply(null, cntSeries.concat([1]));
+    var cStep = (function () { var raw = cMax * 1.18 / 4, p = Math.pow(10, Math.floor(Math.log10(raw || 1))); return [1, 1.2, 1.5, 2, 2.5, 3, 4, 4.5, 5, 6, 8, 10].map(function (m) { return m * p; }).filter(function (v) { return v >= raw; })[0]; })(), cHi = cStep * 4;
+    var rAll = rateSeries.concat(provSeries), rMx = Math.max.apply(null, rAll), rMn = Math.min.apply(null, rAll);
+    var rStep = nice(Math.max(rMx - rMn, rMx * 0.1, 0.04) / 2), rHi = Math.ceil((rMx + rStep * 0.35) / rStep) * rStep, rLo = rHi - rStep * 4; if (rLo < 0) { rStep = nice(rHi / 4); rHi = rStep * 4; rLo = 0; }
+    var TH = Math.max(220, Math.min(560, Math.round(st.trendH || 266))), TPY0 = 30, TPY1 = TH - 24;
+    var TMID = TPY0 + (TPY1 - TPY0) * 0.52;
+    var tyC = function (v) { return TPY1 - (v / cHi) * (TPY1 - TPY0); };
+    var tyR = function (v) { return TPY1 - ((v - rLo) / (rHi - rLo)) * (TPY1 - TPY0); };
+    var TW = Math.max(320, Math.round(st.trendW || 1200));
+    var slotW = (TW - 44 - 38 - 8) / 5.8, bandW = slotW * 0.8, bandPad = bandW / 2 + 4;
+    var tx = function (i) { return 44 + bandPad + i * slotW; };
+    var bandX = function (i) { return [tx(i) - bandW / 2, bandW]; };
+    var lblW = Math.max.apply(null, cntSeries.map(function (v) { return (fi(v) + "명").length * 6.7 + 8; }).concat([0]));
+    var barW = Math.min(slotW * 0.82, Math.max(Math.min(46, slotW * 0.42), lblW));
+    var pathR = function (s) { return s.map(function (v, i) { return tx(i) + "," + tyR(v).toFixed(1); }).join(" "); };
+    var trend = {
+      scopePath: pathR(rateSeries), provPath: pathR(provSeries),
+      points: rateSeries.map(function (v, i) {
+        var yy = YEARS[i], c = yy === year;
+        return { x: tx(i), y: tyR(v).toFixed(1), val: f2(v) + "%", labelY: (tyR(v) - 10).toFixed(1), year: yy + "학년도", cur: c,
+          r: c ? 5 : 3.6, stroke: "#fff",
+          hx: bandX(i)[0].toFixed(1), hw: bandX(i)[1].toFixed(1), band: c ? "oklch(0.955 0.02 250)" : "transparent",
+          onClick: function () { self.setState({ year: yy }); } };
+      })
+    };
+    var cTicks = [0, 1, 2, 3, 4].map(function (k) { return k * cStep; });
+    var rTicks = [0, 1, 2, 3, 4].map(function (k) { return rLo + k * rStep; });
+    var rDec = 0; while (rDec < 3 && Math.abs(Math.round(rStep * Math.pow(10, rDec)) - rStep * Math.pow(10, rDec)) > 1e-6) rDec++;
+    while (rDec < 3 && rTicks.map(function (v) { return v.toFixed(rDec); }).some(function (s, i, a) { return a.indexOf(s) !== i; })) rDec++;
+    if (rStep % 1 && rDec === 0) rDec = 1;
+    var ovl = function (a, b) { return a[0] < b[1] && b[0] < a[1]; };
+    var lineY = function (x) {
+      for (var k = 0; k < YEARS.length - 1; k++) { var x0 = tx(k), x1 = tx(k + 1); if (x >= x0 && x <= x1) { var y0 = tyR(rateSeries[k]), y1 = tyR(rateSeries[k + 1]); return y0 + (y1 - y0) * (x - x0) / (x1 - x0); } }
+      return tyR(rateSeries[x < tx(0) ? 0 : YEARS.length - 1]);
+    };
+    var LBL = YEARS.map(function (y, i) {
+      var x = tx(i), top = tyC(cntSeries[i]), py = tyR(rateSeries[i]);
+      var txt = f2(rateSeries[i]) + "%", rw = txt.length * 6.8 + 8;
+      var ry = Math.max(14, py - 16), rBox = [ry - 11, ry + 4];
+      var cw2 = fi(cntSeries[i]).length * 7.2 + 4;
+      var ly = [py, lineY(x - cw2 / 2), lineY(x + cw2 / 2)];
+      var lMin = Math.min.apply(null, ly) - 5, lMax = Math.max.apply(null, ly) + 5;
+      var M = 8, inside = TPY1 - top >= 30, by;
+      if (inside) {
+        by = top + 20;
+        var cBox = function () { return [by - 11 - M, by + 3 + M]; };
+        for (var it = 0; it < 4; it++) {
+          var hitL = ovl(cBox(), [lMin, lMax]), hitR = ovl(cBox(), rBox);
+          if (!hitL && !hitR) break;
+          by = Math.max(hitL ? lMax : 0, hitR ? rBox[1] : 0) + M + 11;
+        }
+        if (by + 3 > TPY1 - 2) { by = top - 8; inside = false; }
+      } else by = top - 8;
+      if (!inside) {
+        var oBox = [by - 11, by + 3];
+        if (ovl([oBox[0] - M, oBox[1] + M], rBox)) { ry = Math.max(14, Math.min(py - 16, oBox[0] - M - 4)); if (ry > py - 8) ry = py + 20; }
+      }
+      return { by: by, inside: inside, ry: ry, rw: rw, txt: txt };
+    });
+    trend.barEls = React.createElement("g", { style: { pointerEvents: "none" } },
+      cntSeries.map(function (v, i) { var c = YEARS[i] === year, y0 = tyC(v); return React.createElement("rect", { key: "tb" + i, x: (tx(i) - barW / 2).toFixed(1), y: y0.toFixed(1), width: barW.toFixed(1), height: Math.max(0, TPY1 - y0).toFixed(1), fill: c ? "#063a74" : "oklch(0.6 0.09 250)", rx: 1 }); })
+
+    );
+    trend.textEls = React.createElement("g", { style: { pointerEvents: "none" } },
+      cntSeries.map(function (v, i) { var c = YEARS[i] === year, L0 = LBL[i]; var bIn = TPY1 - tyC(v) >= 22 && barW >= (fi(v) + "명").length * 6.7 + 2; return svgText("tc" + i, tx(i), (bIn ? TPY1 - 13 : tyC(v) - 6).toFixed(1), fi(v) + "명", { size: 11.5, weight: 700, fill: bIn ? "#fff" : "#1e2124" }); }),
+      cTicks.map(function (v, i) { return svgText("tg" + i, 39, (tyC(v) + 4).toFixed(1), fi(v), { anchor: "end", size: 11 }); }),
+      rTicks.map(function (v, i) { return svgText("tr" + i, TW - 2, (tyR(v) + 4).toFixed(1), v.toFixed(rDec), { anchor: "end", size: 11, fill: "oklch(0.55 0.04 250)" }); }),
+      trend.points.map(function (p, i) { var L0 = LBL[i]; var ryy = Math.max(13, tyR(rateSeries[i]) - 12), cv = cntSeries[i], outC = !(TPY1 - tyC(cv) >= 22 && barW >= (fi(cv) + "명").length * 6.7 + 2);
+      if (outC) { var cy0 = tyC(cv) - 6; if (ryy > cy0 - 14 && ryy - 12 < cy0 + 3) ryy = Math.max(13, cy0 - 16); }
+      var bTop = tyC(cv), lblFill = "#1e2124";
+      if (!outC && ryy + 2 > bTop - 2 && Math.abs(p.x - tx(i)) < 1) {
+        if (bTop - 4 >= 13) ryy = Math.min(ryy, bTop - 4);
+        else if (YEARS[i] === year) lblFill = "#fff";
+      }
+      var py2 = tyR(rateSeries[i]), hw = L0.rw / 2 - 2;
+      var clear = function (base) {
+        var bx = [base - 12, base + 3];
+        var lys = [-hw, -hw / 2, 0, hw / 2, hw].map(function (d) { return d === 0 ? py2 : lineY(p.x + d); });
+        var hitLine = lys.some(function (yv) { return yv >= bx[0] - 3 && yv <= bx[1] + 3; });
+        var hitPt = py2 + 6 >= bx[0] && py2 - 6 <= bx[1];
+        var hitEdge = bTop >= bx[0] - 2 && bTop <= bx[1] + 2;
+        return !hitLine && !hitPt && !hitEdge && bx[0] >= 2 && bx[1] <= TPY1 - 2;
+      };
+      var cands = [py2 - 12, py2 - 18, py2 - 24, py2 + 21, py2 + 27, py2 - 30, py2 + 33], ryF = null;
+      for (var ci = 0; ci < cands.length; ci++) { if (clear(cands[ci])) { ryF = cands[ci]; break; } }
+      if (ryF === null) ryF = Math.max(13, py2 - 12);
+      return React.createElement("text", { key: "tv" + i, x: p.x, y: ryF.toFixed(1), textAnchor: "middle", fontSize: 11.5, fontWeight: 700, fill: "#1e2124", stroke: "#fff", strokeWidth: 2.5, strokeLinejoin: "round", paintOrder: "stroke fill", style: { pointerEvents: "none" } }, L0.txt); }),
+      trend.points.map(function (p, i) { return svgText("ty" + i, p.x, TH - 6, p.year.replace("학년도", ""), { size: 12, weight: p.cur ? 700 : 400, fill: p.cur ? "#063a74" : "oklch(0.55 0.015 255)" }); }),
+      []
+    );
+    trend.rUnit = rIdx >= 0 ? "비율(%)" : "학업중단율(%)";
+    trend.unitRow = "display:flex; justify-content:space-between; align-items:flex-end; gap:8px; margin-top:8px; padding:0; font-size:11.5px; font-weight:600; color:oklch(0.5 0.015 255); line-height:1.2";
+    trend.vb = "0 0 " + TW + " " + TH; trend.axisY = TPY1; trend.bandH = TH - 16;
+    trend.svgStyle = "position:absolute; left:0; top:0; width:100%; height:100%; display:block; overflow:hidden";
+    trend.ref = this._trendRef;
+    trend.x2 = TW - 38;
+    trend.showProv = rIdx < 0 && scope.length !== SCHOOLS.length;
+    trend.lineName = rIdx >= 0 ? "비율(%) · 전체 학업중단 대비" : "학업중단율(%)";
+    if (!trend.showProv) trend.provPath = "";
+    var trendSub = scopeName + " · " + gradeName + " · 조회 기간 2020–2025학년도 (" + year + "학년도 강조) · 연도를 누르면 학년도 필터가 바뀝니다";
+
+    // ---- donut
+    var shareOf = function (key) {
+      var raw = DROP_KINDS.map(function (d) { return d.base * (0.78 + prand(key + d.k, "dk") * 0.44); });
+      var t = sum(raw);
+      return raw.map(function (v) { return v / t; });
+    };
+    var dKey = scopeName + "|" + grade + "|" + st.stype;
+    var total = Math.round(cur.drop), prevTotal = Math.round(prev.drop);
+    var counts = splitCounts(total, shareOf(dKey + "|" + year));
+    var prevCounts = splitCounts(prevTotal, shareOf(dKey + "|" + prevYear));
+    var hs = st.hoverSeg;
+    var ang = -Math.PI / 2, gap = total > 0 ? 0.014 : 0;
+    var enter = function (i) { return function () { self.setState({ hoverSeg: i }); }; };
+    var leave = function () { self.setState({ hoverSeg: -1 }); };
+    var segs = [], rows = [];
+    var dOrder = DROP_KINDS.map(function (d, i) { return i; }).sort(function (a, b) { return counts[b] - counts[a]; });
+    var maxCnt = Math.max.apply(null, counts.concat([0]));
+    dOrder.forEach(function (i) {
+      var d = DROP_KINDS[i];
+      var share = total ? counts[i] / total : 0, span = share * Math.PI * 2;
+      var a0 = ang, a1 = ang + span; ang = a1;
+      var on = hs === i, delta = counts[i] - prevCounts[i];
+      var tip = d.k + " · " + fi(counts[i]) + "명 · " + f1(share * 100) + "% · 전년 대비 " + signed(delta, 0) + "명";
+      if (span > 0.001) segs.push({
+        d: arcPath(100, 100, on ? 56 : 58, on ? 94 : 90, a0 + (span > gap * 3 ? gap : 0), a1 - (span > gap * 3 ? gap : 0)),
+        fill: d.c, op: hs < 0 || on ? 1 : 0.35, onEnter: enter(i), onLeave: leave, title: tip
+      });
+      rows.push({
+        label: d.etc ? (false ? "▾ " : "▸ ") + d.k : d.k, count: fi(counts[i]) + "명", pct: f1(share * 100) + "%", onEnter: enter(i), onLeave: leave,
+        onClick: function () { var sel = st.selReason === d.k; self.setState({ selReason: sel ? null : d.k }); },
+        dotStyle: { width: 9, height: 9, borderRadius: 2, background: d.c, flex: "none" },
+        title: tip, delta: signed(delta, 0) + "명",
+        deltaStyle: { fontFamily: "'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif", fontSize: 12, textAlign: "right", whiteSpace: "nowrap", color: delta > 0 ? "#de3412" : delta < 0 ? "#063a74" : "oklch(0.58 0.015 255)" },
+        barStyle: { display: "block", height: "100%", width: (maxCnt ? counts[i] / maxCnt * 100 : 0) + "%", background: "#1c589c", borderRadius: 2, transition: "width .25s" },
+        style: {
+          display: "grid", gridTemplateColumns: "minmax(96px, 128px) minmax(0, 1fr) 64px 50px 58px", alignItems: "center", gap: 8,
+          flex: false ? "0 0 auto" : "1 1 0", minHeight: 44, maxHeight: false ? 44 : 64, borderBottom: "1px solid oklch(0.95 0.005 250)",
+          padding: "4px 5px", borderRadius: 2, cursor: "pointer",
+          background: on || st.selReason === d.k || (d.etc && false) ? "oklch(0.96 0.02 250)" : "transparent", opacity: hs < 0 || on ? 1 : 0.55
+        }
+      });
+    });
+    var etcIdx = DROP_KINDS.findIndex(function (d) { return d.etc; });
+    var etcTotal = etcIdx >= 0 ? counts[etcIdx] : 0;
+    var etcRaw = ETC_KINDS.map(function (e) { return e.base * (0.8 + prand(dKey + year + e.k, "etc") * 0.4); });
+    var etcCounts = splitCounts(etcTotal, etcRaw.map(function (v) { return v / sum(etcRaw); }));
+    var etcOrder = ETC_KINDS.map(function (e, i) { return i; }).sort(function (a, b) { var ua = ETC_KINDS[a].k === "미분류", ub = ETC_KINDS[b].k === "미분류"; if (ua !== ub) return ua ? 1 : -1; return etcCounts[b] - etcCounts[a]; });
+    var etcRows = etcOrder.map(function (i) { var e = ETC_KINDS[i];
+      var p = etcTotal ? etcCounts[i] / etcTotal : 0;
+      return {
+        label: e.k, count: fi(etcCounts[i]) + "명", pct: f1(p * 100) + "%",
+        barStyle: { display: "block", height: "100%", width: (p * 100) + "%", background: e.k === "검정고시" ? "#063a74" : e.k === "진로 변경" ? "oklch(0.62 0.12 250)" : "oklch(0.62 0.015 255)", borderRadius: 2 }
+      };
+    });
+    var hk = hs >= 0 ? DROP_KINDS[hs] : null;
+    var ETC_C = ["#063a74", "oklch(0.62 0.12 250)", "oklch(0.62 0.015 255)"];
+    var etcYear = YEARS.map(function (y) {
+      var t = etcIdx >= 0 ? splitCounts(Math.round(agg(scope, y, grade).drop), shareOf(dKey + "|" + y))[etcIdx] : 0;
+      var rw = ETC_KINDS.map(function (e) { return e.base * (0.8 + prand(dKey + y + e.k, "etc") * 0.4); });
+      return splitCounts(t, rw.map(function (v) { return v / sum(rw); }));
+    });
+    var etcLine = (function () {
+      var W = 320, H = 150, L = 34, R = 8, T = 14, B = 22, mx = 0;
+      etcYear.forEach(function (a) { a.forEach(function (v) { mx = Math.max(mx, v); }); });
+      var stp = nice(Math.max(1, mx) * 1.18 / 3), hiV = stp * 3, sl = (W - L - R) / YEARS.length;
+      var xx = function (i) { return L + sl * (i + 0.5); }, yy = function (v) { return H - B - v / hiV * (H - B - T); };
+      var yi = YEARS.indexOf(year), kids = [];
+      if (yi >= 0) kids.push(React.createElement("rect", { key: "bd", x: (xx(yi) - sl * 0.4).toFixed(1), y: 2, width: (sl * 0.8).toFixed(1), height: H - 4, fill: "oklch(0.955 0.02 250)" }));
+      [0, 1, 2, 3].forEach(function (k) { var v = k * stp; kids.push(React.createElement("line", { key: "g" + k, x1: L, x2: W - R, y1: yy(v).toFixed(1), y2: yy(v).toFixed(1), stroke: k ? "oklch(0.94 0.005 250)" : "#cdd1d5", strokeWidth: 1 })); kids.push(svgText("gy" + k, L - 5, (yy(v) + 4).toFixed(1), fi(v), { anchor: "end", size: 10.5 })); });
+      ETC_KINDS.forEach(function (e, ki) {
+        kids.push(React.createElement("polyline", { key: "pl" + ki, points: etcYear.map(function (a, i) { return xx(i).toFixed(1) + "," + yy(a[ki]).toFixed(1); }).join(" "), fill: "none", stroke: ETC_C[ki], strokeWidth: 2, strokeDasharray: e.k === "미분류" ? "4 3" : null }));
+        etcYear.forEach(function (a, i) { kids.push(React.createElement("circle", { key: "pc" + ki + "_" + i, cx: xx(i).toFixed(1), cy: yy(a[ki]).toFixed(1), r: YEARS[i] === year ? 3.6 : 2.4, fill: ETC_C[ki], stroke: "#fff", strokeWidth: 1 })); });
+      });
+      YEARS.forEach(function (y, i) { kids.push(svgText("yl" + i, xx(i).toFixed(1), H - 6, String(y).replace("학년도", ""), { size: 11, weight: y === year ? 700 : 400, fill: y === year ? "#063a74" : "oklch(0.55 0.015 255)" })); });
+      return React.createElement("svg", { viewBox: "0 0 " + W + " " + H, style: { width: "100%", height: "auto", display: "block", overflow: "visible" } }, kids);
+    })();
+    var donut = {
+      etcLine: etcLine, etcTotalLabel: fi(etcTotal) + "명", etcClosed: !false,
+      etcLegend: ETC_KINDS.map(function (e, ki) { return { label: e.k, sw: "width:14px; height:0; border-top:2px " + (e.k === "미분류" ? "dashed " : "solid ") + ETC_C[ki] }; }),
+      etcClose: function () { self.setState({ etcOpen: false }); }, etcOpenFn: function () { self.setState({ etcOpen: true }); },
+      sub: scopeName + " · " + year + "학년도 · " + gradeName + " · 변동구분·자퇴 사유 기준 (공식 분류)",
+      etcOpen: !!false, etcRows: etcRows, etcHead: "자퇴_기타 " + fi(etcTotal) + "명 · " + year + "학년도",
+      segs: segs, rows: rows, totalLabel: fi(total) + "명",
+      centerLabel: hk ? hk.k : "전체",
+      centerValue: hk ? fi(counts[hs]) + "명" : fi(total) + "명",
+      centerSub: hk ? f1(total ? counts[hs] / total * 100 : 0) + "% · 전년 " + signed(counts[hs] - prevCounts[hs], 0) + "명" : "전년 대비 " + signed(total - prevTotal, 0) + "명"
+    };
+
+    // ---- profile: 데이터 관리카드 기반 관련 지표 (선택 vs 경기도, 경기도=100)
+    var nI = IND.length;
+    var altIdx = IND.map(function (a) { return prov.ind[a.key] > 0 ? cur.ind[a.key] / prov.ind[a.key] * 100 : 0; });
+    var altMaxIdx = 200; // 축 끝 = 경기도 평균의 2배 → 평균 점선은 축 가운데
+    var aCX = 160, aCY = 113, aR = 74;
+    var aAng = function (i) { return -Math.PI / 2 + i * 2 * Math.PI / nI; };
+    var aPt = function (i, r) { return (aCX + Math.cos(aAng(i)) * r).toFixed(1) + "," + (aCY + Math.sin(aAng(i)) * r).toFixed(1); };
+    var aPos = function (v) { return Math.max(2, Math.min(1, v / altMaxIdx) * aR); };
+    var hide2 = function (v) { return restricted && selSchool ? "비공개" : v; };
+    var fmtV = function (a, v) { return a.unit === "건" ? f1(v) + "건" : f2(v) + "%"; };
+    var ORG = "#de3412", BLU = "#063a74", GRY = "oklch(0.58 0.015 255)";
+    var radar = {
+      rings: [0.25, 0.5, 0.75, 1].map(function (f) { return { points: IND.map(function (a, i) { return aPt(i, aR * f); }).join(" ") }; }),
+      spokes: IND.map(function (a, i) { var p = aPt(i, aR).split(","); return { x: p[0], y: p[1] }; }),
+      points: IND.map(function (a, i) { return aPt(i, aPos(altIdx[i])); }).join(" "),
+      avgPoints: IND.map(function (a, i) { return aPt(i, aPos(100)); }).join(" ")
+    };
+    radar.labelEls = React.createElement("g", null,
+      IND.map(function (a, i) {
+        var c = Math.cos(aAng(i)), s = Math.sin(aAng(i)), rr = aR + 12;
+        var x = aCX + c * rr, y = aCY + s * rr;
+        var anchor = Math.abs(c) < 0.2 ? "middle" : (c > 0 ? "start" : "end");
+        var y1 = s < -0.5 ? y - 34 : s > 0.5 ? y + 14 : y - 14;
+        return React.createElement("g", { key: "al" + i },
+          svgText("an" + i, x.toFixed(1), y1.toFixed(1), a.label, { size: 14, weight: 600, fill: "oklch(0.36 0.02 255)", anchor: anchor }),
+          svgText("av" + i, x.toFixed(1), (y1 + 16).toFixed(1), hide2(fmtV(a, cur.ind[a.key])), { size: 14, anchor: anchor, mono: true, fill: "#063a74", weight: 700 }),
+          svgText("ap" + i, x.toFixed(1), (y1 + 31).toFixed(1), "평균 " + fmtV(a, prov.ind[a.key]), { size: 13, anchor: anchor, mono: true, fill: "oklch(0.5 0.015 255)" })
+        );
+      })
+    );
+    var isAllProv = scope.length === SCHOOLS.length;
+    var altScale = Math.max(200, Math.max.apply(null, altIdx) * 1.1);
+    var vMax = Math.max.apply(null, IND.map(function (a) { return cur.ind[a.key]; })) * 1.15 || 1;
+    var PCOLS = isAllProv ? "minmax(96px, 140px) minmax(0, 1fr) 66px" : "minmax(96px, 140px) minmax(0, 1fr) 66px 72px 68px";
+    var alt = {
+      showAvg: !isAllProv, selLabel: isAllProv ? "경기도 전체" : (selSchool ? nameOf(selSchool) : "선택 대상 · " + (scopeName === "경기도 전체" ? "경기도" : scopeName) + (st.stype !== "전체" ? " " + st.stype : (scopeName === "경기도 전체" ? " 전체" : ""))), barHead: "비율 비교",
+      headStyle: "display:grid; grid-template-columns:" + PCOLS + "; gap:8px; align-items:center; padding:0 8px 4px; border-bottom:1px solid #cdd1d5; font-size:11.5px; color:oklch(0.55 0.015 255); white-space:nowrap",
+      gradeNote: grade !== "전체" ? "학교폭력 조치 지표는 학년 구분 자료가 없어 전 학년 기준입니다." : "",
+      rows: IND.map(function (a) {
+        var v = cur.ind[a.key], p = prov.ind[a.key], d = v - p, scaleMax = Math.max(v, p) * 1.25 || 1;
+        var tol = a.unit === "건" ? 0.05 : 0.005, dc = Math.abs(d) < tol ? GRY : d > 0 ? ORG : BLU;
+        return {
+          onClick: function () { self.setState({ indicator: a.key, hoverId: null, activeQ: null, modal: a.key === "attend" ? st.modal : (st.modal === "att" ? null : st.modal) }); },
+          rowStyle: "display:grid; grid-template-columns:" + PCOLS + "; gap:8px; align-items:center; min-height:38px; padding:5px 8px; margin-top:3px; cursor:pointer; border-radius:2px; border:1px solid " + (a.key === axis.key ? "#1c589c" : "transparent") + "; background:" + (a.key === axis.key ? "oklch(0.96 0.02 250)" : "transparent"),
+          provV: fmtV(a, p), showDetail: a.key === "attend",
+          openDetail: function (e) { if (e && e.stopPropagation) e.stopPropagation(); self.setState({ indicator: "attend", activeQ: null, hoverId: null, modal: "att", pmin: false, ph: null }); },
+          label: a.label, metricName: a.metric, value: fmtV(a, v), prov: "경기도 " + fmtV(a, p),
+          meta: a.meta ? a.meta : hide2(a.cntName + " " + fi(cur.cnt[a.key]) + a.cntUnit + " / 재적 " + fi(cur.enroll) + "명"),
+          bar: { position: "absolute", left: 0, top: 0, bottom: 0, width: (isAllProv ? v / vMax * 100 : Math.min(100, (p > 0 ? v / p * 100 : 0) / altScale * 100)) + "%", background: "#063a74", borderRadius: 2 },
+          mark: isAllProv ? { display: "none" } : { position: "absolute", top: -3, bottom: -3, left: (100 / altScale * 100) + "%", width: 0, borderLeft: "2px solid oklch(0.55 0.015 255)" },
+          diff: (d > tol ? "+" : d < -tol ? "−" : "") + (a.unit === "건" ? f1(Math.abs(d)) + "건" : f2(Math.abs(d)) + "%p"),
+          diffStyle: { fontFamily: "'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif", fontSize: 13, fontWeight: 700, color: dc, whiteSpace: "nowrap", textAlign: "right" }
+        };
+      })
+    };
+    var radarSub = scopeName + " · " + year + "학년도 · 점선 = 경기도 평균(바깥일수록 평균보다 높음) · 지표를 누르면 아래 분포가 바뀌고, 출결 불안정은 미인정 결석률 추이로 이어집니다";
+    var defs = [], defsOpen = false, prof2 = {}, groups = {}, typeMat = {};
+
+    // ---- 출결 추이 (미인정 결석률)
+    var attendView = "month";
+    var MONTHS = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
+    var MSEASON = [1.22, 0.96, 0.72, 0.86, 0.95, 1.08, 0.62, 0.58, 1.02, 1.14, 1.26, 1.42];
+    var attG = isOverview ? grade : (st.attGrade || "전체");
+    var attCur = attG === grade ? cur : agg(scope, year, attG), attProv = attG === grade ? prov : agg(SCHOOLS, year, attG);
+    var absBase = attCur.ind.attend * 0.34, provAbs = attProv.ind.attend * 0.34;
+    var akey = scopeName + "|" + year + "|" + attG + "|" + st.stype;
+    var monthVals = MONTHS.map(function (m, i) { return Math.round(absBase * MSEASON[i] * (0.92 + prand(akey + m, "att") * 0.18) * 100) / 100; });
+    var QLABEL = ["1분기", "2분기", "3분기", "4분기"];
+    var quarterVals = [0, 1, 2, 3].map(function (q) { return Math.round(sum(monthVals.slice(q * 3, q * 3 + 3)) / 3 * 100) / 100; });
+    var attLabels = attendView === "quarter" ? QLABEL : MONTHS;
+    var attVals = attendView === "quarter" ? quarterVals : monthVals;
+    var ATT_KINDS = [{ k: "absent", label: "미인정 결석" }, { k: "late", label: "미인정 지각", base: 6.4 }, { k: "early", label: "미인정 조퇴", base: 3.1 }, { k: "result", label: "미인정 결과", base: 4.3 }];
+    var attKind = ATT_KINDS.some(function (x) { return x.k === st.attKind; }) ? st.attKind : "absent";
+    var AK = ATT_KINDS.filter(function (x) { return x.k === attKind; })[0], isAbs = attKind === "absent", DAYS = 18;
+    var enrC = Math.max(1, attCur.enroll || 1), enrP = Math.max(1, attProv.enroll || 1), attTot;
+    if (isAbs) {
+      attTot = Math.round(sum(monthVals) / 100 * enrC * DAYS);
+    } else {
+      var sf = (attProv.ind.attend ? attCur.ind.attend / attProv.ind.attend : 1) * (0.85 + prand(akey + attKind, "ak") * 0.3);
+      var mkC = function (enr, f, key) { return MONTHS.map(function (m, i) { return Math.round(AK.base * MSEASON[i] * f * (0.88 + prand(key + attKind + m, "akm") * 0.24) * enr / 100); }); };
+      var cP = mkC(enrP, 1, "경기도|" + year + "|" + attG);
+      var cC = scope.length === SCHOOLS.length ? cP : mkC(enrC, sf, akey);
+      attVals = attendView === "quarter" ? [0, 1, 2, 3].map(function (q) { return sum(cC.slice(q * 3, q * 3 + 3)) / enrC * 100; }) : cC.map(function (c) { return c / enrC * 100; });
+      provAbs = sum(cP) / (attendView === "quarter" ? 4 : 12) / enrP * 100;
+      attTot = sum(cC);
+    }
+    var absStu = Math.round(enrC * Math.min(0.6, attCur.ind.attend / 100 * 1.7));
+    var aCnt = isAbs ? monthVals.map(function (v) { return Math.round(v / 100 * enrC * DAYS); }) : cC.slice();
+    var aRate = isAbs ? monthVals.slice() : cC.map(function (c) { return c / enrC * 100; });
+    var cUnit = isAbs ? "일" : "회";
+    var cName = isAbs ? "미인정 결석일수" : AK.label + " 횟수", rName = isAbs ? "미인정 결석률" : AK.label + " 재적 100명당 횟수";
+    var cTitle = cName + "(" + cUnit + ")", rTitle = rName + (isAbs ? "(%)" : "(회)");
+    var fmtC = function (v) { return fi(v) + cUnit; }, fmtR = function (v) { return isAbs ? f2(v) + "%" : f1(v) + "회"; };
+    var niceUp = function (raw) { var p = Math.pow(10, Math.floor(Math.log10(raw || 1))); return [1, 1.2, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].map(function (m) { return m * p; }).filter(function (v) { return v >= raw - 1e-9; })[0]; };
+    var acStep = niceUp(Math.max.apply(null, aCnt.concat([1])) * 1.15 / 4), acHi = acStep * 4;
+    var arStep = niceUp(Math.max.apply(null, aRate.concat([provAbs, 0.01])) * 1.25 / 4), arHi = arStep * 4;
+    var arDec = 0; while (arDec < 3 && Math.abs(Math.round(arStep * Math.pow(10, arDec)) - arStep * Math.pow(10, arDec)) > 1e-6) arDec++;
+    var AW = Math.max(320, Math.round(st.attW || 640)), AH = 236, APX0 = 44, APX1 = AW - 40, APY0 = 18, APY1 = AH - 22;
+    var aSlot = (APX1 - APX0) / 12, aBw = Math.min(30, aSlot * 0.56);
+    var axX = function (i) { return APX0 + aSlot * (i + 0.5); };
+    var ayC = function (v) { return APY1 - v / acHi * (APY1 - APY0); }, ayR = function (v) { return APY1 - v / arHi * (APY1 - APY0); };
+    var peakIdx = aRate.indexOf(Math.max.apply(null, aRate)), lowIdx = aRate.indexOf(Math.min.apply(null, aRate));
+    var aHov = typeof st.attHover === "number" ? st.attHover : null;
+    var CE = React.createElement, PF = "'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif";
+    var aT = function (k, x, y, t, o) { o = o || {}; return CE("text", { key: k, x: x, y: y, textAnchor: o.anchor || "middle", fontSize: o.size || 11, fontWeight: o.weight || 400, fill: o.fill || "oklch(0.55 0.015 255)", fontFamily: PF, stroke: o.halo ? "#fff" : undefined, strokeWidth: o.halo ? 3 : undefined, paintOrder: o.halo ? "stroke fill" : undefined, style: { pointerEvents: "none" } }, t); };
+    var linePts = aRate.map(function (v, i) { return axX(i).toFixed(1) + "," + ayR(v).toFixed(1); }).join(" ");
+    var showLbl = function (i) { return i === peakIdx || i === lowIdx || i === aHov; };
+    var attSvg = CE("svg", { width: "100%", height: AH, viewBox: "0 0 " + AW + " " + AH, style: { display: "block", overflow: "visible" }, onMouseLeave: function () { self.setState({ attHover: null }); } },
+      [0, 1, 2, 3, 4].map(function (k) { var y = APY1 - k / 4 * (APY1 - APY0); return CE("line", { key: "g" + k, x1: APX0, x2: APX1, y1: y, y2: y, stroke: k ? "oklch(0.95 0.005 250)" : "#cdd1d5", strokeWidth: 1 }); }),
+      [0, 1, 2, 3, 4].map(function (k) { return aT("lc" + k, APX0 - 6, APY1 - k / 4 * (APY1 - APY0) + 4, fi(k * acStep), { anchor: "end" }); }),
+      [0, 1, 2, 3, 4].map(function (k) { return aT("lr" + k, APX1 + 6, APY1 - k / 4 * (APY1 - APY0) + 4, (k * arStep).toFixed(arDec), { anchor: "start", fill: "oklch(0.5 0.05 250)" }); }),
+      aHov !== null ? CE("rect", { key: "hb", x: axX(aHov) - aSlot / 2, y: APY0 - 6, width: aSlot, height: APY1 - APY0 + 6, fill: "oklch(0.96 0.015 250)" }) : null,
+      aCnt.map(function (v, i) { var y = ayC(v); return CE("rect", { key: "b" + i, x: axX(i) - aBw / 2, y: y, width: aBw, height: Math.max(0, APY1 - y), rx: 1, fill: i === aHov ? "oklch(0.78 0.06 250)" : "oklch(0.86 0.045 250)" }); }),
+      CE("line", { key: "pv", x1: APX0, x2: APX1, y1: ayR(provAbs), y2: ayR(provAbs), stroke: "oklch(0.55 0.02 255)", strokeWidth: 1.5, strokeDasharray: "5 4" }),
+      CE("polyline", { key: "ln", points: linePts, fill: "none", stroke: "#063a74", strokeWidth: 2.2, strokeLinejoin: "round" }),
+      aRate.map(function (v, i) { return CE("circle", { key: "c" + i, cx: axX(i), cy: ayR(v), r: i === aHov ? 4.5 : 3.2, fill: "#063a74", stroke: "#fff", strokeWidth: 1.5 }); }),
+      aRate.map(function (v, i) { if (!showLbl(i)) return null; var y = ayR(v) - 9; if (y < 10) y = ayR(v) + 16; return aT("rl" + i, axX(i), y, fmtR(v), { size: 11, weight: 700, fill: "#063a74", halo: true }); }),
+      MONTHS.map(function (m, i) { return aT("m" + i, axX(i), AH - 6, m, { size: 11, weight: i === aHov ? 700 : 400, fill: i === aHov ? "#063a74" : "oklch(0.55 0.015 255)" }); }),
+      MONTHS.map(function (m, i) { return CE("rect", { key: "h" + i, x: axX(i) - aSlot / 2, y: 0, width: aSlot, height: AH, fill: "transparent", style: { cursor: "pointer" }, onMouseEnter: function () { if (self.state.attHover !== i) self.setState({ attHover: i }); }, onClick: function () { self.setState({ attHover: i }); } }); })
+    );
+    var attTip = aHov === null ? { show: false } : { show: true, month: MONTHS[aHov], cLabel: cName, cVal: fmtC(aCnt[aHov]), rLabel: rName, rVal: fmtR(aRate[aHov]),
+      style: { position: "absolute", top: 4, left: (axX(aHov) / AW * 100) + "%", transform: axX(aHov) > AW * 0.6 ? "translateX(calc(-100% - 14px))" : "translateX(14px)", background: "#fff", border: "1px solid oklch(0.86 0.02 250)", borderRadius: 2, padding: "6px 9px", boxShadow: "0 4px 12px -4px oklch(0.3 0.03 255 / 0.25)", pointerEvents: "none", zIndex: 3, whiteSpace: "nowrap", display: "flex", flexDirection: "column", gap: 2 } };
+    var attFold = !!st.attFold;
+    var attend = {
+      foldLabel: "접기 ▴", foldClick: function () { self.setState({ attFold: true }); }, openFn: function () { self.setState({ attFold: false }); },
+      title: "월별 " + (isAbs ? "미인정 결석" : AK.label) + " 현황",
+      kindTabs: ATT_KINDS.map(function (x) { var on = x.k === attKind; return { label: x.label, onClick: function () { self.setState({ attKind: x.k, attHover: null }); }, style: "appearance:none; border:none; font-family:inherit; font-size:12.5px; font-weight:700; padding:4px 12px; cursor:pointer; white-space:nowrap; background:" + (on ? "#063a74" : "#fff") + "; color:" + (on ? "#fff" : "#063a74") }; }),
+      kpis: [
+        { label: "월평균 " + cName, value: fmtC(Math.round(sum(aCnt) / 12)) },
+        { label: "월평균 " + rName, value: fmtR(sum(aRate) / 12) },
+        isAbs ? { label: "미인정 결석 학생 수 (연간)", value: fi(absStu) + "명" } : { label: "연간 " + cName, value: fmtC(sum(aCnt)) }
+      ],
+      sub: scopeName + " · " + year + "학년도 · " + (attG === "전체" ? "전 학년" : attG),
+      gradeTabs: ["전체", "1학년", "2학년", "3학년"].map(function (g) {
+        var on = attG === g;
+        return { label: g, onClick: function () { self.setState({ attGrade: g }); },
+          style: "appearance:none; border:none; font-family:inherit; font-size:12.5px; font-weight:700; padding:3px 10px; cursor:pointer; white-space:nowrap; background:" + (on ? "#063a74" : "#fff") + "; color:" + (on ? "#fff" : "#063a74") };
+      }),
+      cTitle: cTitle, rTitle: rTitle, cLeg: cName + "(" + cUnit + ")", rLeg: rTitle, provLeg: "경기도 평균 " + rName + " " + fmtR(provAbs),
+      svg: attSvg, tip: attTip, ref: this._attRef, unitRow: "display:flex; justify-content:space-between; gap:8px; margin-top:12px; font-size:11.5px; font-weight:600; color:oklch(0.5 0.015 255); line-height:1.2"
+    };
+    var attLabels = MONTHS, attVals = aCnt;
+
+    // ---- quadrant scatter
+    var userTypeSc = selSchool ? (st.preSel ? st.preSel.stype : "전체") : st.stype;
+    var scOffice = selSchool && st.preSel ? st.preSel.office : st.office, scSigun = selSchool && st.preSel ? st.preSel.sigun : st.sigun;
+    if (selSchool && scOffice !== "전체" && selSchool.office !== scOffice) { scOffice = selSchool.office; }
+    var basePool = SCHOOLS.filter(function (s) { return (userTypeSc === "전체" || s.type === userTypeSc) && (scOffice === "전체" || s.office === scOffice) && (scSigun === "전체" || s.region === scSigun); });
+    var presentTypes = STYPES.filter(function (t) { return basePool.some(function (s) { return s.type === t.k; }); }).map(function (t) { return t.k; });
+    var scType = st.scType && presentTypes.indexOf(st.scType) >= 0 ? st.scType : "전체";
+    var pool = scType === "전체" ? basePool : basePool.filter(function (s) { return s.type === scType; });
+    var typeChips = ["전체"].concat(presentTypes).map(function (k) {
+      var on = k === scType, t = STYPES.filter(function (x) { return x.k === k; })[0];
+      return {
+        label: k, onClick: function () { self.setState(Object.assign(self.state.school !== "전체" ? self._unselect() : {}, { scType: k, hoverId: null, activeQ: null })); },
+        dotStyle: { width: 7, height: 7, borderRadius: 2, background: t ? t.c : "oklch(0.6 0.02 255)", flex: "none", display: t ? "inline-block" : "none" },
+        style: {
+          display: "inline-flex", alignItems: "center", gap: 5, fontSize: 12.5, fontWeight: on ? 700 : 500,
+          borderRadius: 2, padding: "3px 10px", whiteSpace: "nowrap",
+          background: on ? "oklch(0.96 0.03 250)" : "#fff",
+          border: "1px solid " + (on ? "#1c589c" : "#cdd1d5"),
+          color: on ? "#063a74" : "oklch(0.5 0.015 255)"
+        }
+      };
+    });
+    var pts = pool.map(function (s) { return { s: s, x: indOf(s, axis.key, year, grade), y: rateOf(s, year, grade) }; });
+    var xs = pts.map(function (p) { return p.x; }), ys = pts.map(function (p) { return p.y; });
+    var xAvg = prov.ind[axis.key], yAvg = prov.rate;
+    var xMin = Math.min.apply(null, xs.concat([xAvg])), xMax = Math.max.apply(null, xs.concat([xAvg]));
+    var yMin = Math.min.apply(null, ys.concat([yAvg])), yMax = Math.max.apply(null, ys.concat([yAvg]));
+    var xPad = (xMax - xMin || 1) * 0.06, yPad = (yMax - yMin || 1) * 0.09;
+    var xLo = Math.max(0, xMin - xPad), xHi = xMax + (xMax - xMin || 1) * 0.1, yLo = Math.max(0, yMin - yPad), yHi = yMax + yPad * 1.6;
+    var VW = self.state.scW ? Math.max(360, Math.round(350 * self.state.scW / 380)) : 440;
+    var PX0 = 68, PX1 = VW - 10, PY0 = 14, PY1 = 298;
+    (function () {
+      var u = 350 / 380, BH = 46 * u, BW = 128 * u, Hp = PY1 - PY0, Wp = PX1 - PX0;
+      var yr = (yMax - yMin) || 1, k = (Hp - 2 * BH) / yr;
+      yHi = yMax + BH / k; yLo = Math.max(0, yMin - BH / k);
+      var f = Math.min(0.45, (BW + 10) / Wp);
+      if ((xAvg - xLo) / (xHi - xLo) < f) xLo = Math.max(0, xAvg - f / (1 - f) * (xHi - xAvg));
+      if ((xHi - xAvg) / (xHi - xLo) < f) xHi = xAvg + f / (1 - f) * (xAvg - xLo);
+      self._qBand = BH;
+    })();
+    var px = function (v) { return PX0 + (v - xLo) / (xHi - xLo) * (PX1 - PX0); };
+    var py = function (v) { return PY1 - (v - yLo) / (yHi - yLo) * (PY1 - PY0); };
+    var fit = linfit(xs, ys), r = pearson(xs, ys);
+    var q = { ll: 0, lr: 0, ul: 0, ur: 0 };
+    pts.forEach(function (p) { q[(p.y >= yAvg ? "u" : "l") + (p.x >= xAvg ? "r" : "l")]++; });
+    var N = pts.length || 1;
+    var qp = function (k) { return q[k] + "개교 · " + Math.round(q[k] / N * 100) + "%"; };
+    var focusId = selSchool ? selSchool.id : st.hoverId;
+    var tipPt = focusId ? pts.filter(function (p) { return p.s.id === focusId; })[0] : null;
+    var selPt = selSchool ? pts.filter(function (p) { return p.s.id === selSchool.id; })[0] : null;
+    var yTicks = [0, 1, 2, 3].map(function (k) { return yLo + (yHi - yLo) * (k / 3); });
+    var xTicks = [0, 1, 2, 3, 4].map(function (k) { return xLo + (xHi - xLo) * (k / 4); });
+    var ax = px(xAvg), ay = py(yAvg);
+    var textW = function (t, size) { var w = 0; for (var i = 0; i < t.length; i++) w += t.charCodeAt(i) > 0x2E80 ? size : size * 0.62; return w; };
+    var lineYAt = function (x) { var xv = xLo + (x - PX0) / (PX1 - PX0) * (xHi - xLo); return py(fit.a + fit.b * xv); };
+    var avxText = axis.short + " 평균 " + (axis.unit === "건" ? f1(xAvg) + "건" : f2(xAvg) + "%");
+    var avyText = "학업중단율 평균 " + f2(yAvg) + "%";
+    var avyBox = { x0: PX0 + 4, x1: PX0 + 4 + textW(avyText, 11), y0: ay - 17, y1: ay - 2 };
+    var PAD = 10, LH = 13;
+    var hits = function (b) {
+      var ya = lineYAt(b.x0), yb = lineYAt(b.x1);
+      if (Math.min(ya, yb) < b.y1 + 3 && Math.max(ya, yb) > b.y0 - 3) return true;
+      if (b.x0 < ax + 4 && b.x1 > ax - 4) return true;
+      if (b.y0 < ay + 4 && b.y1 > ay - 4) return true;
+      if (b.x0 < avyBox.x1 + 4 && b.x1 > avyBox.x0 - 4 && b.y0 < avyBox.y1 + 3 && b.y1 > avyBox.y0 - 3) return true;
+      return false;
+    };
+    var qLabel = function (key, k, name, note) {
+      var right = k[1] === "r", top = k[0] === "u", strong = !!note;
+      var lines = [{ t: name, size: 10.5 }, { t: qp(k), size: 10 }];
+      if (note) lines.push({ t: note, size: 9.5 });
+      var w = Math.max.apply(null, lines.map(function (l) { return textW(l.t, l.size); })), h = lines.length * LH;
+      var qx0 = right ? ax : PX0, qx1 = right ? PX1 : ax, qy0 = top ? PY0 : ay, qy1 = top ? ay : PY1;
+      var xs0 = [right ? qx1 - PAD - w : qx0 + PAD];
+      var alt = right ? qx0 + PAD : qx1 - PAD - w;
+      if (Math.abs(alt - xs0[0]) > 8) xs0.push(alt);
+      var steps = Math.max(0, Math.floor((qy1 - qy0 - 2 * PAD - h) / 5));
+      var best = null;
+      for (var xi = 0; xi < xs0.length && !best; xi++) {
+        for (var i = 0; i <= steps; i++) {
+          var y0 = top ? qy0 + PAD + i * 5 : qy1 - PAD - h - i * 5;
+          var b = { x0: xs0[xi], x1: xs0[xi] + w, y0: y0, y1: y0 + h };
+          if (!hits(b)) { best = b; break; }
+        }
+      }
+      if (!best) { var fy = top ? qy0 + PAD : qy1 - PAD - h; best = { x0: xs0[0], x1: xs0[0] + w, y0: fy, y1: fy + h }; }
+      var tx = right ? best.x1 : best.x0, anchor = right ? "end" : "start";
+      var c1 = strong ? "#de3412" : "oklch(0.42 0.02 255)", c2 = strong ? "#de3412" : "oklch(0.55 0.015 255)";
+      return React.createElement("g", { key: key },
+        svgText(key + "a", tx.toFixed(1), (best.y0 + 10).toFixed(1), name, { anchor: anchor, size: 10.5, weight: 700, fill: c1, halo: true }),
+        svgText(key + "b", tx.toFixed(1), (best.y0 + 10 + LH).toFixed(1), qp(k), { anchor: anchor, size: 10, mono: true, weight: 600, fill: c2, halo: true }),
+        note ? svgText(key + "c", tx.toFixed(1), (best.y0 + 10 + LH * 2).toFixed(1), note, { anchor: anchor, size: 9.5, weight: 500, fill: c2, halo: true }) : null
+      );
+    };
+    var qKeyOf = function (p) { return (p.y >= yAvg ? "u" : "l") + (p.x >= xAvg ? "r" : "l"); };
+    var activeQ = st.activeQ || null;
+    var QC = { ur: "oklch(0.6 0.2 27)", ul: "oklch(0.72 0.15 52)", lr: "oklch(0.83 0.14 88)", ll: "oklch(0.8 0.07 160)" };
+    var QBG = { ur: "#fdeeea", ul: "oklch(0.97 0.03 55)", lr: "oklch(0.975 0.04 92)", ll: "oklch(0.97 0.025 160)" };
+    var QFG = { ur: "#b52a0e", ul: "oklch(0.48 0.13 50)", lr: "oklch(0.45 0.1 80)", ll: "oklch(0.42 0.07 160)" };
+    var quadSummary = [
+      { k: "ul", name: "학업중단 주의군" },
+      { k: "ur", name: "위험관심군" },
+      { k: "ll", name: "양호군" },
+      { k: "lr", name: axis.short + " 주의군" }
+    ].map(function (o) {
+      var on = activeQ === o.k, focus = o.k === "ur", dim = activeQ && !on;
+      return {
+        k: o.k, name: o.name, value: qp(o.k), count: q[o.k] + "개교", pct: Math.round(q[o.k] / N * 100) + "%", note: o.note || "", hasNote: !!o.note,
+        pctStyle: { fontSize: 12, fontWeight: 500, color: focus ? "#7a5200" : "oklch(0.5 0.015 255)", whiteSpace: "nowrap" },
+        onClick: function () { var base = self.state.school !== "전체" ? self._unselect() : {}; self.setState(Object.assign(base, { activeQ: on ? null : o.k, hoverId: null, scPick: false })); },
+        style: {
+          appearance: "none", textAlign: "left", display: "flex", flexDirection: "column", justifyContent: "center", gap: 1, minWidth: 0, flex: "1 1 auto",
+          padding: "3px 8px", borderRadius: 2, fontFamily: "inherit", cursor: "pointer",
+          background: focus ? "#fdeeea" : on ? "oklch(0.96 0.02 250)" : "#fff",
+          border: (on ? "1.5px solid " : "1px solid ") + (on ? (focus ? "#7a5200" : "#1c589c") : focus ? "#f3b7a8" : "#cdd1d5"),
+          opacity: dim ? 0.5 : 1, transition: "opacity .15s"
+        },
+        nameStyle: { display: "block", fontSize: 12, fontWeight: 500, color: focus ? "#7a5200" : "oklch(0.42 0.02 255)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", lineHeight: 1.3 },
+        valueStyle: { fontSize: 13, lineHeight: 1.25, fontWeight: 700, color: focus ? "#7a5200" : "#1e2124", whiteSpace: "nowrap" }
+      };
+    });
+    var scatter = {
+      quadSummary: quadSummary,
+      title: axis.metric + axis.josa + " 학업중단율의 학교별 분포", titleHi: axis.metric, titleRest: axis.josa.trim() + " 학업중단율의 학교별 분포",
+      sub: year + "학년도 · " + gradeName + " · 비교 집단 " + (scSigun !== "전체" ? scSigun : scOffice !== "전체" ? scOffice : "경기도") + " " + (scType === "전체" ? "" : scType + " ") + pts.length + "개교 · " + (selSchool ? nameOf(selSchool) + " 강조" : regionSel ? scopeName + " 소속 학교 강조" : "X축 " + axis.metric + " / Y축 학업중단율"),
+      axisKey: axis.key, typeChips: typeChips,
+      typeValue: scType,
+      typeOpts: ["전체"].concat(presentTypes).map(function (k) { return { value: k, label: k }; }),
+      onType: function (e) { var v = e.target.value; self.setState(Object.assign(self.state.school !== "전체" ? self._unselect() : {}, { scType: v, hoverId: null, activeQ: null })); },
+      typeSelectStyle: {
+        appearance: "none", WebkitAppearance: "none", background: "#fff",
+        border: "1px solid " + (scType !== "전체" ? "oklch(0.72 0.09 250)" : "#cdd1d5"),
+        borderRadius: 2, padding: "5px 26px 5px 10px", fontSize: 13, fontWeight: 600, fontFamily: "inherit",
+        color: scType !== "전체" ? "#063a74" : "oklch(0.36 0.02 255)", cursor: "pointer"
+      },
+      axisOpts: IND.map(function (a) { return { value: a.key, label: a.short }; }),
+      onAxis: function (e) { self.setState({ indicator: e.target.value, hoverId: null, activeQ: null }); },
+      rLabel: (r >= 0 ? "+" : "−") + f2(Math.abs(r)), rText: rWords(r),
+      hl: { x: ax.toFixed(1), w: Math.max(0, PX1 - ax).toFixed(1), h: Math.max(0, ay - PY0).toFixed(1) },
+      avgX: ax.toFixed(1), avgY: ay.toFixed(1),
+      grid: yTicks.map(function (v) { return { y: py(v).toFixed(1) }; }),
+      linePath: PX0 + "," + py(fit.a + fit.b * xLo).toFixed(1) + " " + PX1 + "," + py(fit.a + fit.b * xHi).toFixed(1),
+      dots: pts.map(function (p) {
+        var isSel = selSchool && p.s.id === selSchool.id, isHov = st.hoverId === p.s.id;
+        var inQ = !activeQ || qKeyOf(p) === activeQ;
+        var inR = (st.office === "전체" || p.s.office === st.office) && (st.sigun === "전체" || p.s.region === st.sigun);
+        var dimOthers = (!!selSchool && !isSel && !isHov) || (!selSchool && regionSel && !inR && !isHov) || (!inQ && !isSel && !isHov);
+        return {
+          cx: px(p.x).toFixed(1), cy: py(p.y).toFixed(1), r: isSel ? 5 : isHov ? 5 : activeQ && inQ ? 3.2 : 2.7,
+          fill: STYPES[p.s.ti].c, op: isSel || isHov ? 0.95 : dimOthers ? 0.14 : activeQ ? 0.8 : 0.5,
+          stroke: isSel ? "#1e2124" : isHov ? "#1e2124" : "transparent", sw: isSel ? 1.8 : isHov ? 1.6 : 5,
+          onEnter: function () { self.setState({ hoverId: p.s.id }); },
+          onLeave: function () { self.setState({ hoverId: null }); },
+          onClick: function () { var cur = self.state; self.setState(isSel ? Object.assign(self._unselect(), { scPick: false }) : (function () { var pre = cur.school !== "전체" && cur.preSel ? cur.preSel : { office: cur.office, stype: cur.stype, sigun: cur.sigun }; return { school: p.s.id, hoverId: null, schoolPage: null, scPick: false, activeQ: null, preSel: pre, office: pre.office, stype: pre.stype, sigun: pre.sigun }; })()); }
+        };
+      }),
+      typeLegend: STYPES.map(function (t) { return { label: t.k, dotStyle: { width: 9, height: 9, borderRadius: 2, background: t.c, flex: "none" } }; }),
+      tip: { show: false }
+    };
+    var qMk = function (o, right) {
+      var focus = o.k === "ur", on = activeQ === o.k;
+      return {
+        name: o.name, count: o.count, pct: o.pct, onClick: o.onClick,
+        style: "appearance:none; display:flex; flex-direction:column; align-items:" + (right ? "flex-end" : "flex-start") + "; gap:0; padding:3px 8px; border-radius:2px; font-family:inherit; cursor:pointer; background:color-mix(in oklch, " + QBG[o.k] + " 35%, transparent); border:" + (on ? "1.5px solid " + QFG[o.k] : "1px solid " + QC[o.k]) + "; opacity:" + (activeQ && !on ? 0.5 : 1),
+        nameStyle: "font-size:12px; font-weight:" + (focus ? 700 : 600) + "; color:" + QFG[o.k] + "; white-space:nowrap",
+        valStyle: "font-family:'Pretendard GOV Variable', 'Pretendard GOV', system-ui, sans-serif; font-size:12px; font-weight:600; color:" + QFG[o.k] + "; white-space:nowrap"
+      };
+    };
+    var scH = st.scHover || null;
+    scatter.qRects = ["ul", "ur", "ll", "lr"].map(function (k) { var right = k[1] === "r", top = k[0] === "u"; var x0 = right ? ax : PX0, x1 = right ? PX1 : ax, y0 = top ? PY0 : ay, y1 = top ? ay : PY1; return { x: x0.toFixed(1), y: y0.toFixed(1), w: Math.max(0, x1 - x0).toFixed(1), h: Math.max(0, y1 - y0).toFixed(1), fill: QC[k], op: activeQ ? (activeQ === k ? 0.32 : 0.06) : 0.16 }; });
+    scatter.hAvx = function () { self.setState({ scHover: "avx" }); }; scatter.hAvy = function () { self.setState({ scHover: "avy" }); }; scatter.hFit = function () { self.setState({ scHover: "fit" }); }; scatter.hOff = function () { self.setState({ scHover: null }); };
+    scatter.avxW = scH === "avx" ? 2.2 : 1.2; scatter.avyW = scH === "avy" ? 2.2 : 1.2; scatter.fitW = scH === "fit" ? 2.6 : 1.6;
+    scatter.qTop = [qMk(quadSummary[0], false), qMk(quadSummary[1], true)];
+    scatter.qBot = [qMk(quadSummary[2], false), qMk(quadSummary[3], true)];
+    scatter.chipHit = function (e) { var t = e.target; if (t && t.tagName && t.tagName.toLowerCase() === "circle") return; var bs = e.currentTarget.querySelectorAll("[data-q]"); for (var i = 0; i < bs.length; i++) { var r = bs[i].getBoundingClientRect(); if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) { var m = scatter["q" + bs[i].getAttribute("data-q")]; if (m && m.onClick) m.onClick(); return; } } };
+    scatter.chipHover = function (e) { var root = e.currentTarget, bs = root.querySelectorAll("[data-q]"), t = e.target, onDot = t && t.tagName && t.tagName.toLowerCase() === "circle", hit = null; if (e.type !== "mouseleave" && !onDot) { for (var i = 0; i < bs.length; i++) { var r = bs[i].getBoundingClientRect(); if (e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom) { hit = bs[i]; break; } } } for (var j = 0; j < bs.length; j++) { var on = bs[j] === hit; bs[j].style.boxShadow = on ? "0 2px 6px -1px oklch(0.3 0.04 255 / 0.28)" : ""; bs[j].style.transform = on ? "translateY(-1px)" : ""; bs[j].style.filter = on ? "brightness(0.97) saturate(1.25)" : ""; bs[j].style.transition = "box-shadow .12s, transform .12s, filter .12s"; } root.style.cursor = hit ? "pointer" : ""; };
+    scatter.qUL = scatter.qTop[0]; scatter.qUR = scatter.qTop[1]; scatter.qLL = scatter.qBot[0]; scatter.qLR = scatter.qBot[1];
+    scatter.qPos = { l: (PX0 / VW * 100 + 0.8).toFixed(2) + "%", r: ((VW - PX1) / VW * 100 + 0.8).toFixed(2) + "%", t: (PY0 / 350 * 100 + 1.2).toFixed(2) + "%", b: ((350 - PY1) / 350 * 100 + 1.2).toFixed(2) + "%" };
+    scatter.qRowStyle = "display:flex; justify-content:space-between; align-items:flex-end; gap:8px; padding:0 " + ((VW - PX1) / VW * 100).toFixed(2) + "% 0 " + (PX0 / VW * 100).toFixed(2) + "%";
+    if (tipPt) {
+      var s = tipPt.s, e = enrollOf(s, year, grade), tx0 = px(tipPt.x), ty0 = py(tipPt.y), flip = tx0 > VW * 0.62;
+      var hide = function (v) { return restricted ? "비공개" : v; };
+      scatter.tip = {
+        show: true, name: nameOf(s),
+        rows: [
+          { k: "학교유형", v: s.type },
+          { k: "교육지원청", v: s.office.replace("교육지원청", "") },
+          { k: "재적 학생 수", v: hide(fi(e) + "명") },
+          { k: axis.short, v: axis.meta ? f2(tipPt.x) + "%" : hide(fi(tipPt.x / 100 * e) + axis.cntUnit) + " · " + (axis.unit === "건" ? f1(tipPt.x) + "건/100명" : f2(tipPt.x) + "%") },
+          { k: "학업중단", v: hide(fi(tipPt.y / 100 * e) + "명") + " · " + f2(tipPt.y) + "%" }
+        ],
+        style: {
+          position: "absolute", zIndex: 5, pointerEvents: "none", left: (tx0 / VW * 100) + "%", top: (ty0 / 350 * 100) + "%",
+          transform: "translate(" + (flip ? "calc(-100% - 12px)" : "12px") + ", -50%)",
+          background: "#fff", border: "1px solid oklch(0.86 0.02 250)", borderRadius: 2, padding: "7px 10px",
+          boxShadow: "none", pointerEvents: "none", minWidth: 190, zIndex: 3
+        }
+      };
+    }
+    var sk = 350 / 380;
+    scatter.clipY = PY0.toFixed(1); scatter.clipH = (PY1 - PY0).toFixed(1); scatter.vb = "0 0 " + VW + " 350"; scatter.px1 = PX1; scatter.px0 = PX0; scatter.pw = PX1 - PX0;
+    var fs = function (px0) { return +(px0 * sk).toFixed(2); };
+    scatter.textEls = React.createElement("g", null,
+      yTicks.filter(function (v) { return Math.abs(py(v) - ay) > 16; }).map(function (v, i) { return svgText("sy" + i, PX0 - 4, (py(v) + 3.5).toFixed(1), f2(v), { anchor: "end", mono: true, size: fs(9.5) }); }),
+      xTicks.filter(function (v) { return Math.abs(px(v) - ax) > 26; }).map(function (v, i) { return svgText("sx" + i, px(v).toFixed(1), 310 + fs(9.5) * 0.4, f1(v), { mono: true, size: fs(9.5) }); }),
+      [svgText("sxl", Math.round((PX0 + PX1) / 2), 326 + fs(10) * 0.9, axis.metric + (axis.unit === "건" ? " (건/100명)" : " (%)"), { size: fs(10), weight: 600, fill: "oklch(0.45 0.02 255)" })],
+      [svgText("syl", 15, (PY0 + PY1) / 2 - fs(10) - 3, "학업", { anchor: "middle", size: fs(10), weight: 600, fill: "oklch(0.45 0.02 255)" })],
+      [svgText("syl1", 15, (PY0 + PY1) / 2 - 2, "중단율", { anchor: "middle", size: fs(10), weight: 600, fill: "oklch(0.45 0.02 255)" })],
+      [svgText("syl2", 15, (PY0 + PY1) / 2 + fs(10) - 1, "(%)", { anchor: "middle", size: fs(10), weight: 600, fill: "oklch(0.45 0.02 255)" })],
+      [React.createElement("line", { key: "axt", x1: ax.toFixed(1), x2: ax.toFixed(1), y1: PY1, y2: PY1 + 5, stroke: "#063a74", strokeWidth: 1.5 }),
+       svgText("axv", ax.toFixed(1), 310 + fs(9.5) * 0.4, (axis.unit === "건" ? f1(xAvg) : f2(xAvg)), { size: fs(9.5), weight: 700, fill: "#063a74", halo: true }),
+       React.createElement("line", { key: "ayt", x1: PX0 - 5, x2: PX0, y1: ay.toFixed(1), y2: ay.toFixed(1), stroke: "#063a74", strokeWidth: 1.5 }),
+       svgText("ayv", PX0 - 4, (ay + 3.5).toFixed(1), f2(yAvg), { anchor: "end", size: fs(9.5), weight: 700, fill: "#063a74", halo: true })],
+      scH === "avx" ? [svgText("avx", (ax > PX1 - 130 ? ax - 6 : ax + 6).toFixed(1), 28, avxText, { anchor: ax > PX1 - 130 ? "end" : "start", size: fs(11), fill: "#063a74", weight: 700, halo: true })] : [],
+      scH === "avy" ? [svgText("avy", (PX1 - 6).toFixed(1), (ay - 6).toFixed(1), avyText, { anchor: "end", size: fs(11), fill: "#063a74", weight: 700, halo: true })] : [],
+      scH === "fit" ? [svgText("rfit", ((PX0 + PX1) / 2).toFixed(1), Math.max(26, Math.min(PY1 - 8, lineYAt((PX0 + PX1) / 2) - 10)).toFixed(1), "상관계수 " + (r >= 0 ? "+" : "−") + f2(Math.abs(r)) + " · " + rWords(r), { size: fs(11.5), fill: "#063a74", weight: 700, halo: true })] : [],
+
+
+      selPt ? [svgText("sel", (px(selPt.x) + (px(selPt.x) > PX1 - 100 ? -8 : 8)).toFixed(1), (py(selPt.y) - 8).toFixed(1), nameOf(selPt.s), { anchor: px(selPt.x) > PX1 - 100 ? "end" : "start", size: 10, weight: 700, fill: "#1e2124", halo: true })] : []
+    );
+
+    if (!isOverview && activeQ && self._mkSchoolRow) {
+      var qObj = quadSummary.filter(function (o) { return o.k === activeQ; })[0];
+      var sq2 = (st.schoolQ || "").trim();
+      var qRows = pts.filter(function (p) { return qKeyOf(p) === activeQ; }).map(function (p) { return p.s; }).sort(function (a, b) { return a.name.localeCompare(b.name, "ko"); }).map(self._mkSchoolRow).filter(function (r) { return !sq2 || r.name.indexOf(sq2) >= 0; });
+      dlSchool = qRows; schoolRows = qRows; schoolCount = qRows.length;
+      cartoTitle = (qObj ? qObj.name : "") + " 현황";
+      pager = { show: false, count: qRows.length + "개교" };
+    }
+    var topR = dOrder[0], incR = dOrder.slice().sort(function (a, b) { return (counts[b] - prevCounts[b]) - (counts[a] - prevCounts[a]); })[0];
+    var isProv = scope.length === SCHOOLS.length, HI = function (c) { return { fontWeight: 700, color: c || "#063a74", whiteSpace: "nowrap" }; };
+    var SD = { width: 5, height: 5, background: "#063a74", flex: "none", marginTop: 7, alignSelf: "flex-start" };
+    var summaryLines = [];
+    if (isProv) summaryLines.push({ pre: scopeName + " " + year + "학년도 학업중단율은 " + f2(cur.rate) + "%로 전년 대비 ", hi: Math.abs(dRate) < 0.005 ? "변화 없음" : signed(dRate, 2) + "%p " + (dRate > 0 ? "증가" : "감소"), post: "", hiStyle: HI(dRate > 0.0049 ? ORANGE : dRate < -0.0049 ? BLUE : GRAY), dot: SD });
+    else summaryLines.push({ pre: scopeName + " 학업중단율 " + f2(cur.rate) + "%로 경기도 평균보다 ", hi: Math.abs(vsR) < 0.005 ? "같은 수준" : f2(Math.abs(vsR)) + "%p " + (vsR > 0 ? "높음" : "낮음"), post: " (전년 대비 " + signed(dRate, 2) + "%p)", hiStyle: HI(vsR > 0.0049 ? ORANGE : vsR < -0.0049 ? BLUE : GRAY), dot: SD });
+    if (total) summaryLines.push({ pre: "가장 많은 유형은 ", hi: DROP_KINDS[topR].k, post: " " + fi(counts[topR]) + "명(" + f1(counts[topR] / total * 100) + "%)" + (counts[incR] - prevCounts[incR] > 0 ? " · 전년 대비 가장 많이 늘어난 유형은 " + DROP_KINDS[incR].k + "(+" + fi(counts[incR] - prevCounts[incR]) + "명)" : ""), hiStyle: HI(), dot: SD });
+    if (total) {
+      var provSh = provKc.map(function (c) { return provKTot ? c / provKTot * 100 : 0; });
+      if (isProv) {
+        var hiR = regionAgg.filter(function (x) { return x.a.drop >= 20 && x.kc[topR] / Math.round(x.a.drop) * 100 - provSh[topR] >= 5; }).sort(function (a, b) { return b.kc[topR] / b.a.drop - a.kc[topR] / a.a.drop; });
+        if (hiR.length) summaryLines.push({ pre: DROP_KINDS[topR].k + " 비중이 경기도보다 5%p 이상 높은 시·군은 ", hi: hiR.length + "곳", post: " (가장 높은 곳: " + hiR[0].r.name + " " + f1(hiR[0].kc[topR] / Math.round(hiR[0].a.drop) * 100) + "%, 경기도 " + f1(provSh[topR]) + "%)", hiStyle: HI(ORANGE), dot: SD });
+      } else if (total >= 20) {
+        var gap = counts.map(function (c, i) { return { i: i, d: c / total * 100 - provSh[i] }; }).sort(function (a, b) { return b.d - a.d; })[0];
+        if (gap && gap.d >= 5) summaryLines.push({ pre: DROP_KINDS[gap.i].k + " 비중이 ", hi: f1(counts[gap.i] / total * 100) + "%", post: "로 경기도(" + f1(provSh[gap.i]) + "%)보다 " + f1(gap.d) + "%p 높습니다", hiStyle: HI(ORANGE), dot: SD });
+      }
+    }
+    if (!schoolLevel) summaryLines.push({ pre: "경기도 평균을 넘는 시·군은 ", hi: overCount + "개", post: " / 전체 31개", hiStyle: HI(ORANGE), dot: SD });
+    else if (!isProv) {
+      var topI = IND.map(function (a) { return { a: a, d: cur.ind[a.key] - prov.ind[a.key] }; }).sort(function (x, y) { return y.d - x.d; })[0];
+      if (topI && topI.d > 0.005) summaryLines.push({ pre: "주요 요인 중 경기도 평균보다 가장 높은 지표는 ", hi: topI.a.short, post: " (+" + (topI.a.unit === "건" ? f1(topI.d) + "건" : f2(topI.d) + "%p") + ")", hiStyle: HI(ORANGE), dot: SD });
+    }
+    var D = function (name, header, rows) { return function () { self._dl(name, header, rows); }; };
+    var tag = year + "학년도_" + scopeName.replace(/\s+/g, "");
+    var dl = {
+      carto: !schoolLevel ? D("시군별_학업중단현황_" + tag, ["시·군", "학업중단율(%)", "전년 대비(%p)", "학업중단 학생 수(명)"], barRows.map(function (r) { return [r.name, r.rateNum, r.delta.replace("%p", ""), r.count.replace("명", "")]; }))
+        : D("학교별_학업중단현황_" + tag, ["학교명", "학교유형", "학업중단 학생 수(명)", "학업중단율(%)", "전년 대비(%p)"], dlSchool.map(function (r) { return [r.name, r.type, r.count.replace("명", ""), r.rate.replace("%", ""), r.delta]; })),
+      trend: D("연도별_학업중단추이_" + scopeName.replace(/\s+/g, "") + (rIdx >= 0 ? "_" + DROP_KINDS[rIdx].k : ""), ["학년도", "학생 수(명)", (rIdx >= 0 ? "비율(%)" : "학업중단율(%)")].concat(provSeries.length ? ["경기도 평균(%)"] : []), YEARS.map(function (y, i) { return [y, cntSeries[i], f2(rateSeries[i])].concat(provSeries.length ? [f2(provSeries[i])] : []); })),
+      donut: D("학업중단_사유구성_" + tag, ["유형", "학생 수(명)", "구성비(%)", "전년 대비(명)"], rows.map(function (r) { return [r.label, r.count.replace("명", ""), r.pct.replace("%", ""), r.delta.replace("명", "")]; })),
+      profile: D("학업중단_주요요인_" + tag, ["지표", "선택 대상", "경기도 평균", "평균 대비"], (alt.rows || []).map(function (r) { return [r.label, r.value, r.provV, r.diff]; })),
+      scatter: D("학교별분포_" + axis.short + "_" + year, ["학교명", "학교유형", "교육지원청", axis.metric, "학업중단율(%)", "사분면"], pts.map(function (p) { var k = qKeyOf(p), o = quadSummary.filter(function (x) { return x.k === k; })[0]; return [nameOf(p.s), p.s.type, p.s.office, f2(p.x), f2(p.y), o ? o.name : ""]; })),
+      attend: D("출결상세_" + AK.label + "_" + tag, ["월", cTitle, rTitle], MONTHS.map(function (l, i) { return [l, aCnt[i], isAbs ? +aRate[i].toFixed(2) : +aRate[i].toFixed(1)]; }))
+    };
+    var infos = {
+      carto: schoolLevel
+        ? { title: "학교별 학업중단 현황", formula: "학교별 학업중단 학생 수 ÷ 재적 학생 수 × 100", meaning: "학교를 누르면 해당 학교 기준으로 바뀌고, 다시 누르면 해제됩니다" }
+        : (bkIdx < 0 ? { title: "시·군별 학업중단 현황", formula: "시·군 학업중단 학생 수 ÷ 시·군 재적 학생 수 × 100", meaning: "색·점선: 경기도 평균 대비 · 시·군을 누르면 소속 학교 현황으로 바뀝니다" } : { title: "시·군별 " + DROP_KINDS[bkIdx].k + " 발생률", formula: "시·군 " + DROP_KINDS[bkIdx].k + " 학생 수 ÷ 시·군 재적 학생 수 × 100", meaning: "점선: 경기도 발생률(인원 합 ÷ 재적 합) · 유형은 사유 구성 비율에서 선택" }),
+      trend: { title: "연도별 학업중단 추이", formula: "막대: 학업중단 학생 수(명) · 선: 학업중단 학생 수 ÷ 재적 학생 수 × 100", meaning: "학년도와 관계없이 전체 기간 표시 · 연도를 누르면 학년도 필터가 바뀝니다" },
+      donut: { title: "학업중단 사유 구성 비율", formula: "사유별 학생 수 ÷ 전체 학업중단 학생 수 × 100", meaning: "행을 누르면 연도별 추이·시·군 현황이 해당 사유로 바뀝니다" },
+      profile: { title: "학업중단 주요 요인 현황", formula: "지표 해당 학생 수 ÷ 재적 학생 수 × 100", meaning: "회색선: 경기도 평균 · 행을 누르면 학교별 분포 지표가 바뀝니다 · 원인 판정 지표가 아닙니다" },
+      scatter: { title: axis.metric + axis.josa + " 학업중단율의 학교별 분포", formula: "X: 학교별 " + axis.metric + " · Y: 학교별 학업중단율", meaning: "점 1개 = 학교 1개 · 사분면 기준: 경기도 평균 · 상관관계는 인과관계가 아닙니다" },
+      attend: isAbs ? { title: "월별 미인정 결석 현황", formula: "막대: 월별 미인정 결석일수 합계(일) · 선: 미인정 결석일수 ÷ (재적 학생 수 × 수업일수) × 100", meaning: "학생 수: 미인정 결석 1일 이상 학생 · 학년 선택은 이 창에만 적용" } : { title: AK.label + " 발생", formula: AK.label + " 횟수 ÷ 재적 학생 수 × 100 (재적 100명당 회)", meaning: "횟수(회) 단위 · 결석률과 합산하지 않음" }
+    };
+    var KINFO = [
+      { title: "학업중단 학생 수", formula: "자퇴 + 퇴학 학생 수", meaning: "아래: 전년 대비 증감" },
+      { title: "학업중단율", formula: "학업중단 학생 수 ÷ 재적 학생 수 × 100", meaning: "아래: 경기도 평균과의 차이 · 전년 대비 증감" },
+      { title: "전년 대비 학업중단율 증감", formula: "올해 학업중단율 − 전년도 학업중단율", meaning: "단위 %p" }
+    ];
+    kpis.forEach(function (k, i) { k.info = KINFO[i] || {}; });
+
+    var tabs = [["overview", "① 전체 현황"], ["detail", "② 지역·학교 상세"]].map(function (t) {
+      var on = (st.tab || "overview") === t[0];
+      return { label: t[1], onClick: function () { var cs = self.state, ex = {}; if (t[0] === "detail" && cs.sigun !== "전체") { var of = OFFICE[cs.sigun] || cs.office; ex = { sigun: "전체", office: of }; if (cs.preSel) ex.preSel = Object.assign({}, cs.preSel, { sigun: "전체", office: of }); } self.setState(Object.assign({ tab: t[0], hoverId: null }, ex), function () { window.scrollTo(0, 0); }); }, style: "appearance:none; border:none; font-size:13px; font-weight:700; padding:5px 11px; white-space:nowrap; background:" + (on ? "#063a74" : "#fff") + "; color:" + (on ? "#fff" : "oklch(0.42 0.04 255)") };
+    });
+    var tabDesc = isOverview ? "경기도 전체 규모·추이 → 시·군별 차이 → 주요 학업중단 사유" : "선택 지역·학교의 현황 → 사유 → 학업중단 주요 요인 → 학교별 분포·상세 추이";
+    var scopeNote = isOverview
+      ? "모든 필터가 이 탭의 전체 카드에 적용됩니다. 연도별 추이는 전체 기간을 표시하고 선택 학년도만 강조합니다. 시·군은 막대를 눌러 선택합니다."
+      : "학년도·교육지원청·학교유형·학교가 적용됩니다(학년 미적용). 학교별 분포는 경기도 전체 학교를 유지하고 선택 학교만 강조합니다.";
+    var CARD = "background:#fff; border:1px solid #cdd1d5; border-radius:2px; padding:8px 10px; display:flex; flex-direction:column; min-width:0; ";
+    var narrowW = (st.vw || 1400) < 1000;
+    var fewSch = schoolCount <= 10;
+    var L = isOverview ? {
+      trend: CARD + "order:2; flex:50 1 0; min-width:420px; padding-bottom:6px; display:flex; flex-direction:column",
+      carto: CARD + "order:3; flex:1 1 100%; position:relative",
+      cartoInner: "display:flex; flex-direction:column; min-width:0",
+      donut: CARD + "order:1; flex:50 1 0; min-width:360px",
+      wrap: "display:flex; flex-wrap:wrap; gap:7px; align-items:stretch", profCol: "display:none", profile: "display:none", scatter: "display:none", attend: "display:none", brk: "display:none", rightCol: "display:contents"
+    } : {
+      trend: "display:none", donut: "display:none", brk: "display:none",
+      wrap: "display:grid; grid-template-columns:" + (narrowW ? "minmax(0, 1fr)" : "minmax(320px, 35fr) minmax(0, 65fr)") + "; column-gap:7px; row-gap:16px; align-items:start",
+      carto: CARD + "grid-column:1; grid-row:" + (narrowW ? "1" : "1 / span 2") + "; position:relative; min-width:0; align-self:" + (fewSch || narrowW ? "start" : "stretch") + (fewSch || narrowW ? "" : "; min-height:420px"),
+      cartoInner: fewSch || narrowW ? "display:flex; flex-direction:column; min-width:0" + (narrowW && !fewSch ? "; height:520px" : "") : "position:absolute; inset:8px 10px; display:flex; flex-direction:column; min-height:0; min-width:0",
+      rightCol: "display:contents",
+      profCol: "display:contents",
+      profile: CARD + "grid-column:" + (narrowW ? "1; grid-row:2" : "2; grid-row:1") + "; position:relative; padding-bottom:22px; min-width:0",
+      scatter: CARD + "grid-column:" + (narrowW ? "1; grid-row:3" : "2; grid-row:2") + "; min-width:0",
+      attend: "display:none"
+    };
+    var tblScroll = isOverview ? "overflow:auto; max-height:300px; display:flex; flex-direction:column" : fewSch ? "overflow:auto; display:flex; flex-direction:column" : "overflow:auto; height:0; flex:1 1 auto; min-height:160px; display:flex; flex-direction:column";
+
+    return {
+      panel: (function () {
+        var g = self._pGeom(), mn = !!st.pmin;
+        return {
+          style: "position:fixed; z-index:900; left:" + g.px + "px; top:" + g.py + "px; width:" + g.pw + "px; " + (mn || !g.ph ? "" : "height:" + g.ph + "px; ") + "max-height:calc(100vh - " + Math.max(8, g.py + 8) + "px); max-width:calc(100vw - 8px); background:#fff; border:1px solid #9aa4ad; border-radius:2px; box-shadow:0 10px 32px oklch(0.2 0.02 255 / 0.22); display:flex; flex-direction:column",
+          showBody: !mn, minIcon: mn ? "▢" : "–", minTitle: mn ? "복원" : "최소화",
+          toggleMin: function () { self.setState(mn ? { pmin: false, ph: null } : { pmin: true }); }, stop: function (e) { e.stopPropagation(); },
+          dragStart: self._pDrag, resizeStart: self._pResize
+        };
+      })(),
+      modal: {
+        open: st.modal === "etc" || (st.modal === "att" && axis.key === "attend"), isEtc: st.modal === "etc", isAtt: st.modal === "att" && axis.key === "attend",
+        title: st.modal === "etc" ? "기타 세부 사유 분석" : "출결 불안정 상세 분석",
+        sub: scopeName + " · " + year + "학년도",
+        close: function () { self.setState({ modal: null, pmin: false }); }, stop: function (e) { e.stopPropagation(); }
+      },
+      scView: (function () {
+        var canAtt = axis.key === "attend", isAtt = canAtt && st.scView === "attend";
+        var tabStyle = function (on, dis) { return "appearance:none; border:none; font-family:inherit; font-size:12.5px; font-weight:700; padding:4px 12px; white-space:nowrap; cursor:" + (dis ? "not-allowed" : "pointer") + "; background:" + (on ? "#063a74" : "#fff") + "; color:" + (on ? "#fff" : dis ? "oklch(0.75 0.01 255)" : "#063a74"); };
+        return {
+          tabs: [
+            { label: "학교별 분포", disabled: false, title: "", style: tabStyle(!isAtt, false), onClick: function () { self.setState({ scView: "dist" }); } },
+            { label: "출결 상세", disabled: !canAtt, title: canAtt ? "" : "이 지표는 상세 자료 없음", style: tabStyle(isAtt, !canAtt), onClick: function () { if (canAtt) self.setState({ scView: "attend" }); } }
+          ],
+          note: canAtt ? (isAtt ? "출결 불안정 하위 상세" : "출결 상세에서 미인정 결석률 추이 확인") : "이 지표는 상세 자료 없음",
+          distStyle: "display:flex; flex-direction:column; flex:1 1 auto; min-height:0",
+          attStyle: "display:flex; flex-direction:column; min-width:0"
+        };
+      })(),
+      summaryText: scopeName + " " + year + "학년도 학업중단율 " + f2(cur.rate) + "%(" + fi(cur.drop) + "명) · 전년 대비 " + (Math.abs(cur.rate - prev.rate) < 0.005 ? "변화 없음" : signed(cur.rate - prev.rate, 2) + "%p " + (cur.rate > prev.rate ? "증가" : "감소")) + " · 경기도 평균 " + f2(prov.rate) + "% 대비 " + (Math.abs(cur.rate - prov.rate) < 0.005 ? "동일" : signed(cur.rate - prov.rate, 2) + "%p " + (cur.rate > prov.rate ? "높음" : "낮음")) + (overSum && overSum.label ? " · " + overSum.label + " " + overSum.count : ""),
+      showCrumb: !isOverview,
+      crumbs: (function () {
+        var c = [{ label: "경기도 전체" }];
+        if (st.sigun !== "전체") c.push({ label: st.sigun + " (시·군)" });
+        else if (st.office !== "전체") c.push({ label: st.office });
+        if (selSchool) c.push({ label: nameOf(selSchool) });
+        return c.map(function (x, i) { var last = i === c.length - 1; return { label: (i ? "→ " : "") + x.label, style: "white-space:nowrap; font-weight:" + (last ? "700" : "500") + "; color:" + (last ? "#063a74" : "oklch(0.48 0.015 255)") }; });
+      })(),
+      trendTitle: rIdx >= 0 ? "연도별 학업중단 추이" : "연도별 학업중단 추이", trendHasReason: rIdx >= 0, trendReason: rIdx >= 0 ? DROP_KINDS[rIdx].k : "",
+      reasonOpts: [{ value: "", label: "전체 학업중단" }].concat(DROP_KINDS.map(function (d) { return { value: d.k, label: d.k }; })), reasonValue: st.selReason || "", onReason: function (e) { self.setState({ selReason: e.target.value || null }); },
+      showRegionDetail: isOverview && regionSel && !selSchool, regionName: st.sigun !== "전체" ? st.sigun : st.office,
+      schoolQ: st.schoolQ || "", onSchoolQ: function (e) { self.setState({ schoolQ: e.target.value, schoolPage: 0 }); }, pager: pager,
+      scopeInfo: { title: "필터 적용 범위", desc: scopeNote }, tblScroll: tblScroll,
+      showSelBar: isOverview && !!selSchool, selName: selSchool ? nameOf(selSchool) : "",
+      goDetail: function () { self.setState(Object.assign({ tab: "detail", hoverId: null }, selSchool ? { sigun: "전체", office: selSchool.office, preSel: { office: selSchool.office, stype: st.preSel ? st.preSel.stype : "전체", sigun: "전체" } } : st.sigun !== "전체" ? { sigun: "전체", office: OFFICE[st.sigun] || st.office } : {}), function () { var top = function () { try { window.scrollTo(0, 0); document.documentElement.scrollTop = 0; document.body.scrollTop = 0; document.querySelectorAll("*").forEach(function (el) { if (el.scrollTop > 0 && el.scrollHeight > el.clientHeight + 4) { var o = getComputedStyle(el).overflowY; if (o === "auto" || o === "scroll") el.scrollTop = 0; } }); } catch (e) {} }; top(); requestAnimationFrame(top); setTimeout(top, 60); }); }, tabs: tabs, tabDesc: tabDesc, scopeNote: scopeNote, L: L, isCarto: !schoolLevel, isTable: schoolLevel, schoolRows: schoolRows,
+      clearRegion: clearRegion, clearRegionStyle: clearRegionStyle, clearRegionLabel: isOverview ? "지역 선택 해제" : "전체 학교 보기",
+      cartoTitle: cartoTitle, overSum: overSum, infos: infos,
+      condChips: condChips, showBack: showBack, backToAll: backToAll,
+      scopeName: scopeName, filters: filters, resetFilters: resetFilters, clearRegion: clearRegion, dl: dl, summaryLines: summaryLines,
+      summaryInfo: { title: "핵심 요약", formula: "현재 조회 조건의 계산값을 정해진 규칙으로 문장화", meaning: "학업중단율·증감, 주요 사유, 경기도보다 5%p 이상 높은 사유, 평균 초과 시·군 수를 규칙으로 표시 · 현황 요약이며 원인 판단이 아닙니다" },
+      showOverSum: isOverview, barShowVal: barShowVal && !mix, barAvgTick: barAvgTick, barAvgTickLabel: f2(bAvgV), sgMix: mix && !schoolLevel, sgRate: !mix && !schoolLevel,
+      mixLegend: DROP_KINDS.map(function (d, i) { return { label: d.k, style: { width: 11, height: 10, borderRadius: 2, background: STACK_C[i], display: "inline-block", flex: "none", opacity: hlIdx >= 0 && hlIdx !== i ? 0.3 : 1 } }; }),
+      sgTabs: [["rate", "학업중단율"], ["mix", "학업중단 사유 분포"]].map(function (v) { var on = (v[0] === "mix") === mix; return { label: v[1], onClick: function () { self.setState({ sgView: v[0] }); }, style: "appearance:none; font-family:inherit; font-size:12.5px; font-weight:" + (on ? 700 : 500) + "; padding:3px 11px; border:none; border-radius:2px; cursor:pointer; white-space:nowrap; background:" + (on ? "#063a74" : "transparent") + "; color:" + (on ? "#fff" : "oklch(0.4 0.02 255)") }; }), barNameRow: barNameRow, barNameStyle: barNameStyle,
+      resetBtnStyle: {
+        fontSize: 12.5, fontWeight: 500, borderRadius: 2, padding: "5px 13px", marginBottom: 1,
+        background: filtersActive ? "#fff" : "oklch(0.975 0.004 250)",
+        border: "1px solid " + (filtersActive ? "oklch(0.86 0.02 250)" : "#cdd1d5"),
+        color: filtersActive ? "oklch(0.4 0.02 255)" : "oklch(0.72 0.015 255)",
+        cursor: filtersActive ? "pointer" : "default", whiteSpace: "nowrap"
+      },
+      kpis: kpis, legend: legend, tiles: tiles, tileGrid: tileGrid, barRows: barRows, barTicks: barTicks, barAvg: barAvg, provRateLabel: f2(bAvgV) + "%", barAxisLabel: mix ? "사유별 구성비(%) · 시·군 학업중단 학생 = 100%" : bkIdx < 0 ? "학업중단율(%)" : DROP_KINDS[bkIdx].k + " 발생률(%)", barKindValue: st.selReason || "", barKindOpts: [{ value: "", label: "전체 학업중단" }].concat(DROP_KINDS.map(function (d) { return { value: d.k, label: d.k }; })), onBarKind: function (e) { self.setState({ selReason: e.target.value || null }); },
+      showTiles: false, showBars: !schoolLevel,
+      cartoViews: [["tile", "타일"], ["bar", "막대"]].map(function (v) { var on = cartoView === v[0]; return { label: v[1], onClick: function () { self.setState({ cartoView: v[0] }); }, style: "appearance:none; border:none; font-family:inherit; font-size:12.5px; font-weight:700; padding:3px 12px; white-space:nowrap; cursor:pointer; background:" + (on ? "#063a74" : "#fff") + "; color:" + (on ? "#fff" : "#063a74") }; }), cartoRef: this._cartoRef, cartoSub: cartoSub, cartoNote: cartoNote,
+      trend: trend, trendSub: trendSub, donut: donut,
+      radar: radar, radarSub: radarSub, defs: defs, defsOpen: defsOpen,
+      toggleDefs: function () { self.setState({ defsOpen: !defsOpen }); },
+      defsBtnLabel: defsOpen ? "산출 기준 닫기" : "산출 기준",
+      defsBtnStyle: {
+        fontSize: 12, fontWeight: 600, borderRadius: 2, padding: "3px 10px", whiteSpace: "nowrap", flex: "none",
+        background: defsOpen ? "oklch(0.96 0.03 250)" : "#fff",
+        border: "1px solid " + (defsOpen ? "oklch(0.72 0.09 250)" : "#cdd1d5"),
+        color: defsOpen ? "#063a74" : "oklch(0.5 0.015 255)"
+      },
+      attend: attend, scatter: scatter, prof2: prof2,
+      scatterRef: this._scatterRef, alt: alt, groups: groups, typeMat: typeMat
+    };
+  }
+}
+
+</script>
+</body>
+</html>
