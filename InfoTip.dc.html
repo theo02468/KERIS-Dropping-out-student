@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<span style="position:relative; display:inline-flex; width:15px; height:15px; flex:none" onMouseEnter="{{ onEnter }}" onMouseLeave="{{ onLeave }}">
+  <button ref="{{ btnRef }}" onClick="{{ onToggle }}" aria-label="설명 보기" style="appearance:none; width:15px; height:15px; padding:0; margin:0; border:none; background:transparent; color:#1c589c; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; line-height:0" style-hover="color:#063a74">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="11" x2="12" y2="17"></line><circle cx="12" cy="7.5" r="0.6" fill="currentColor"></circle></svg>
+  </button>
+  <sc-if value="{{ open }}" hint-placeholder-val="{{ false }}">
+    <div ref="{{ popRef }}" style="{{ popStyle }}" onMouseEnter="{{ onEnter }}" onMouseLeave="{{ onLeave }}" onClick="{{ stop }}">
+      <div style="font-size:13px; font-weight:700; color:#063a74; line-height:1.4; margin-bottom:8px; padding-bottom:7px; border-bottom:1px solid oklch(0.92 0.01 250)">{{ title }}</div>
+      <div style="display:flex; flex-direction:column; gap:8px">
+        <sc-for list="{{ rows }}" as="r" hint-placeholder-count="2">
+          <div style="display:grid; grid-template-columns:34px minmax(0, 1fr); gap:8px; align-items:baseline">
+            <span style="font-size:11.5px; font-weight:700; color:oklch(0.5 0.02 255); white-space:nowrap">{{ r.k }}</span>
+            <span style="font-size:12.5px; color:#1e2124; line-height:1.5; word-break:keep-all; text-wrap:pretty">{{ r.v }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-if>
+</span>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;40px&quot;,&quot;height&quot;:&quot;40px&quot;},&quot;info&quot;:{&quot;editor&quot;:null,&quot;default&quot;:{&quot;title&quot;:&quot;학업중단율&quot;,&quot;formula&quot;:&quot;학업중단 학생 수 ÷ 재적 학생 수 × 100&quot;,&quot;meaning&quot;:&quot;경기도 평균과 비교&quot;},&quot;tsType&quot;:&quot;{title:string, formula?:string, meaning?:string, desc?:string}&quot;}}">
+class Component extends DCLogic {
+  state = { open: false, pinned: false, pos: null };
+  btnRef = React.createRef();
+  popRef = React.createRef();
+  _id = Math.random().toString(36).slice(2);
+  componentDidMount() {
+    this._onOther = (e) => { if (e.detail !== this._id && this.state.open) this.setState({ open: false, pinned: false }); };
+    this._onDoc = (e) => {
+      if (!this.state.open) return;
+      const b = this.btnRef.current, p = this.popRef.current;
+      if ((b && b.contains(e.target)) || (p && p.contains(e.target))) return;
+      this.setState({ open: false, pinned: false });
+    };
+    this._onScroll = () => { if (this.state.open) this._place(); };
+    window.addEventListener("infotip-open", this._onOther);
+    document.addEventListener("mousedown", this._onDoc, true);
+    window.addEventListener("scroll", this._onScroll, true);
+    window.addEventListener("resize", this._onScroll);
+  }
+  componentWillUnmount() {
+    window.removeEventListener("infotip-open", this._onOther);
+    document.removeEventListener("mousedown", this._onDoc, true);
+    window.removeEventListener("scroll", this._onScroll, true);
+    window.removeEventListener("resize", this._onScroll);
+    clearTimeout(this._t);
+  }
+  componentDidUpdate(pp, ps) { if (this.state.open && !ps.open) this._place(); }
+  _place() {
+    const b = this.btnRef.current || this._btnEl; if (!b) return;
+    const r = b.getBoundingClientRect(), vw = window.innerWidth, vh = window.innerHeight;
+    const W = Math.min(300, vw - 16);
+    let left = r.left + r.width / 2 - 24; if (left + W > vw - 8) left = vw - 8 - W; if (left < 8) left = 8;
+    const p = this.popRef.current, H = p ? p.offsetHeight : 120;
+    let top = r.bottom + 8; if (top + H > vh - 8 && r.top - 8 - H > 8) top = r.top - 8 - H;
+    const pos = { left: Math.round(left), top: Math.round(top), width: W };
+    const c = this.state.pos; if (!c || c.left !== pos.left || c.top !== pos.top || c.width !== pos.width) this.setState({ pos });
+  }
+  _show() {
+    clearTimeout(this._t);
+    window.dispatchEvent(new CustomEvent("infotip-open", { detail: this._id }));
+    const go = () => { this._place(); requestAnimationFrame(() => this._place()); setTimeout(() => this._place(), 40); };
+    if (!this.state.open) this.setState({ open: true }, go); else go();
+  }
+  renderVals() {
+    const info = this.props.info || {};
+    const rows = [];
+    if (info.formula) rows.push({ k: "산식", v: info.formula });
+    if (info.meaning) rows.push({ k: "내용", v: info.meaning });
+    if (info.desc) rows.push({ k: "내용", v: info.desc });
+    const pos = this.state.pos || { left: -9999, top: -9999, width: 300 };
+    return {
+      title: info.title || "",
+      rows,
+      open: this.state.open,
+      btnRef: this.btnRef, popRef: this.popRef,
+      popStyle: { position: "fixed", left: pos.left, top: pos.top, width: pos.width, boxSizing: "border-box", zIndex: 10000, background: "#fff", border: "1px solid #cdd1d5", borderTop: "2px solid #063a74", borderRadius: 2, boxShadow: "0 6px 20px -6px oklch(0.3 0.03 255 / 0.28)", padding: "10px 12px 11px", fontFamily: "inherit", textAlign: "left", whiteSpace: "normal", cursor: "default" },
+      onEnter: (e) => { if (e && e.currentTarget && e.currentTarget.querySelector) { const bt = e.currentTarget.querySelector("button"); if (bt) this._btnEl = bt; } this._show(); },
+      onLeave: () => { if (this.state.pinned) return; clearTimeout(this._t); this._t = setTimeout(() => this.setState({ open: false }), 120); },
+      onToggle: (e) => { e.stopPropagation(); this._btnEl = e.currentTarget; if (this.state.pinned) { this.setState({ open: false, pinned: false }); } else { this._show(); this.setState({ pinned: true }); } },
+      stop: (e) => e.stopPropagation()
+    };
+  }
+}
+</script>
+</body>
+</html>
